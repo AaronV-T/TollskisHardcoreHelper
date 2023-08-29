@@ -62,9 +62,9 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   if (newHealthStatus == healthStatus) then return end
 
   if (newHealthStatus == 1) then
-    self:PlaySound("alert")
+    self:PlaySound("alert2")
   elseif (newHealthStatus == 2 and (healthStatus == nil or healthStatus > newHealthStatus)) then
-    self:PlaySound("warning")
+    self:PlaySound("alert3")
   end
 
   healthStatus = newHealthStatus
@@ -101,5 +101,5 @@ end
 
 function EM:Test()
   print("[THH] Test")
-  self:PlaySound("alert")
+  self:PlaySound("alert3")
 end
