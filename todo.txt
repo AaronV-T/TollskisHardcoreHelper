@@ -1,0 +1,9 @@
+Alert on low health
+Show how many mobs are in combat with you and with other players
+Show dangerous quests
+Show warnings when important buffs/items missing (Power Word: Fortitude, Healthstones)
+Alert if AFK (especially if in combat)
+Show mob abilities/if they're ranged
+Low rank combat skill reminders
+Alert other players with the addon if disconnecting or logging out
+Alert when high level mobs are detected, targetted, or targetting player

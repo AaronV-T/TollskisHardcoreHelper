@@ -1,0 +1,8 @@
+## Interface: 11404
+## Title: Tollski's Hardcore Helper
+## Notes: Provides various functionality for Hardcore characters.
+## Author: Tollski
+## Version: 0.0.1
+## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
+
+Main.lua
