@@ -36,12 +36,14 @@ function EM.EventHandlers.UNIT_COMBAT(self, unitId, action, ind, dmg, dmgType)
   --print("UNIT_COMBAT: " .. unitId .. ". " .. action .. ". " .. ind .. ". " .. dmg .. ". " .. dmgType)
 end
 
-local healthStatus
+local healthStatus = {}
 
 function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   --print("UNIT_HEALTH: " .. unitId)
 
-  if (unitId ~= "player") then return end
+  local updateIsForPlayer = unitId == "player"
+  local updateIsForParty = unitId:match("party")
+  if (not updateIsForPlayer and not updateIsForParty) then return end
 
   local health = UnitHealth(unitId)
   local maxHealth = UnitHealthMax(unitId)
@@ -59,15 +61,48 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
     newHealthStatus = 4 -- green
   end
 
-  if (newHealthStatus == healthStatus) then return end
+  local oldHealthStatus = healthStatus[unitId]
+  if (newHealthStatus == oldHealthStatus) then return end
 
-  if (newHealthStatus == 1) then
-    self:PlaySound("alert2")
-  elseif (newHealthStatus == 2 and (healthStatus == nil or healthStatus > newHealthStatus)) then
-    self:PlaySound("alert3")
+  local r = nil
+  local g = nil
+  local b = nil
+  if (updateIsForParty) then
+    r = 0.667
+    g = 0.671
+    b = 0.996
   end
 
-  healthStatus = newHealthStatus
+  local prefix = "You have "
+  if (updateIsForParty) then
+    local unitName = UnitName(unitId)
+    prefix = unitName .. " has "
+  end
+
+  if (newHealthStatus == 1) then
+    if (r == nil or g == nil or b == nill) then
+      r = 1.000
+      g = 0.059
+      b = 0.059
+    end
+
+    UIErrorsFrame:AddMessage(prefix .. "critically low health!", r, g, b)
+    if (updateIsForPlayer) then
+      self:PlaySound("alert2")
+      if (UnitInParty("player")) then SendChatMessage(string.format("Help, my health is at %d%%!", healthPercentage * 100), "PARTY") end
+    end
+  elseif (newHealthStatus == 2 and (oldHealthStatus == nil or oldHealthStatus > newHealthStatus)) then
+    if (r == nil or g == nil or b == nill) then
+      r = 1.000
+      g = 0.404
+      b = 0.000
+    end
+
+    UIErrorsFrame:AddMessage(prefix .. "low health!", r, g, b)
+    if (updateIsForPlayer) then self:PlaySound("alert3") end
+  end
+
+  healthStatus[unitId] = newHealthStatus
 end
 
 function EM.EventHandlers.UNIT_TARGET(self, unitId)
@@ -90,7 +125,7 @@ function EM:PlaySound(soundFile)
   local normalDialogVolume = GetCVar("Sound_DialogVolume")
   SetCVar("Sound_EnableDialog", 1)
   SetCVar("Sound_DialogVolume", 1)
-  
+
   PlaySoundFile("Interface\\AddOns\\TollskisHardcoreHelper\\resources\\" .. soundFile .. ".mp3", "Dialog")
 
   C_Timer.After(1, function()
@@ -101,5 +136,7 @@ end
 
 function EM:Test()
   print("[THH] Test")
-  self:PlaySound("alert3")
+  local text = UIParent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  text:SetPoint("CENTER")
+  text:SetText("Hello World")
 end
