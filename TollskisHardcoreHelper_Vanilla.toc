@@ -5,4 +5,5 @@
 ## Version: 0.0.1
 ## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
 
+Enum.lua
 Main.lua
