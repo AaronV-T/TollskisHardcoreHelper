@@ -3,13 +3,13 @@ Show how many mobs are in combat with you, with your pet, and with other players
 Show dangerous quests
 Show warnings when important buffs/items missing (Power Word: Fortitude, Healthstones, seals, auras)
 Alert if AFK (especially if in combat)
-Show mob abilities/if they're ranged
 Low rank combat skill reminders
-Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, etc)
+Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, etc), or silenced/stunned.
 Alert when high level mobs are detected, targetted, or targetting player
 Warn when using dangerous abilities in combat (aspect of the cheetah)
 Copying macros from other characters.
-
+Show notice and icon when nearby player requests help.
+Leash timer.
 
 
 Dualbox

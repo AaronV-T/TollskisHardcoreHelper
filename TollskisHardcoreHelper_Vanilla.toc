@@ -7,3 +7,4 @@
 
 Enum.lua
 Main.lua
+UnitHelperFunctions.lua
