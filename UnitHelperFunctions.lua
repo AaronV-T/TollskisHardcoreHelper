@@ -20,18 +20,18 @@ end
 function UHF.FindUnitIdAndGuidByUnitName(unitName)
   for i = 1, #validUnitIds do
     if (UnitName(validUnitIds[i]) == unitName) then
-		return validUnitIds[i], UnitGUID(validUnitIds[i])
+	  return validUnitIds[i], UnitGUID(validUnitIds[i])
 	end
   end
   return nil, nil
 end
 
--- function UHF.FindUnitIdByUnitGuid(unitGuid)
---   for i = 1, #validUnitIds do
---     if UnitGUID(validUnitIds[i]) == unitGuid then return validUnitIds[i] end
---   end
---   return nil
--- end
+function UHF.FindUnitIdByUnitGuid(unitGuid)
+  for i = 1, #validUnitIds do
+    if UnitGUID(validUnitIds[i]) == unitGuid then return validUnitIds[i] end
+  end
+  return nil
+end 
 
 -- function UHF.IsUnitGuidInOurPartyOrRaid(unitGuid)
 --   for i = 1, #validUnitIds do

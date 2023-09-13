@@ -10,8 +10,11 @@ Warn when using dangerous abilities in combat (aspect of the cheetah)
 Copying macros from other characters.
 Show notice and icon when nearby player requests help.
 Leash timer.
-
+mana low
+low ammo
 
 Dualbox
 Auto-accept partner trade
 Notify on follow break
+Autoinvite
+Procs (e.g. nightfall)

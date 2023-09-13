@@ -5,6 +5,7 @@
 ## Version: 0.0.1
 ## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
 
+ConnectionChecker.lua
 Enum.lua
 Main.lua
 UnitHelperFunctions.lua

@@ -28,6 +28,9 @@ end
 
 function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
   if (addonName ~= "TollskisHardcoreHelper") then return end
+
+  TollskisHardcoreHelper_ConnectionChecker:CheckGroupConnectionsInterval()
+  TollskisHardcoreHelper_ConnectionChecker:SendHeartbeatInterval()
 end
 
 function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
@@ -35,9 +38,25 @@ function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, ta
   --print("CHAT_MSG_ADDON. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
 
   local senderPlayer, senderRealm = strsplit("-", sender, 2)
-  local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer, senderRealm)
+  local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
   --print("Sender: " .. tostring(senderUnitId) .. ", " .. tostring(senderGuid))
 
+  if (not TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo[senderGuid]) then
+    TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo[senderGuid] = {
+      IsDisconnected = false,
+      LastMessageTimestamp = GetTime(),
+    }
+  else
+    if (TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo[senderGuid].IsDisconnected) then
+      local reconnectingPlayerUnitId = UnitHelperFunctions.FindUnitIdByUnitGuid(senderGuid)
+      local reconnectingPlayerName = UnitName(reconnectingPlayerUnitId)
+      UIErrorsFrame:AddMessage(string.format("%s has reconnected.", reconnectingPlayerName), 1.000, 1.000, 1.000)
+    end
+
+    TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo[senderGuid].IsDisconnected = false
+    TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo[senderGuid].LastMessageTimestamp = GetTime()
+  end
+  
   if(senderUnitId == "player") then return end
 
   local addonMessageType, arg1 = strsplit("|", text, 2)
@@ -57,9 +76,15 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
   --print("COMBAT_LOG_EVENT_UNFILTERED. " .. tostring(event))
 end
 
+function EM.EventHandlers.GROUP_ROSTER_UPDATE(self)
+  self:UpdateGroupMemberInfo()
+end
+
 function EM.EventHandlers.PLAYER_ENTERING_WORLD(self, isLogin, isReload)
   --print("PLAYER_ENTERING_WORLD. " .. tostring(isLogin) ..  ", " .. tostring(isReload))
 
+  self:UpdateGroupMemberInfo()
+  
   if (isLogin or isReload) then
     C_ChatInfo.RegisterAddonMessagePrefix(addonMessagePrefix)
   end
@@ -305,6 +330,11 @@ function EM:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
 end
 
 function EM:ConvertAddonMessageToNotification(playerName, addonMessageType, arg1)
+  if (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected) then
+    local disconnectingPlayerUnitId = UnitHelperFunctions.FindUnitIdByUnitGuid(arg1)
+    local disconnectingPlayerName = UnitName(disconnectingPlayerUnitId)
+    return string.format("%s has disconnected.", disconnectingPlayerName)
+  end
   if (addonMessageType == ThhEnum.AddonMessageType.EnteredCombat) then
     return string.format("%s entered combat.", playerName)
   end
@@ -343,7 +373,7 @@ function EM:SendMessageToGroup(addonMessageType, arg1)
   if (sentMessageTimestamps[addonMessage] and nowTimestamp - sentMessageTimestamps[addonMessage] < 1) then return end
   sentMessageTimestamps[addonMessage] = nowTimestamp
 
-  local addonMessageChatType = nil
+  local addonMessageChatType = "WHISPER"
   if (UnitInParty("player")) then
     local chatMessage = self:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
     if (chatMessage) then SendChatMessage("[THH] " .. chatMessage, "PARTY") end
@@ -355,7 +385,9 @@ function EM:SendMessageToGroup(addonMessageType, arg1)
 
   if (not addonMessageChatType) then return end
 
-  C_ChatInfo.SendAddonMessage(addonMessagePrefix, addonMessage, addonMessageChatType)
+  local target = nil
+  if (addonMessageChatType == "WHISPER") then target = UnitName("player") end
+  C_ChatInfo.SendAddonMessage(addonMessagePrefix, addonMessage, addonMessageChatType, target)
 end
 
 function EM:PlaySound(soundFile)
@@ -370,6 +402,38 @@ function EM:PlaySound(soundFile)
     SetCVar("Sound_EnableDialog", normalEnableDialog)
     SetCVar("Sound_DialogVolume", normalDialogVolume)
   end)
+end
+
+function EM:UpdateGroupMemberInfo()
+  -- Populate list of unit GUIDs in player's party/raid.
+  local playerGuid = UnitGUID("player")
+  local unitGuidsInGroup = { }
+
+  unitGuidsInGroup[playerGuid] = true
+  for i = 1, 4 do
+    local guid = UnitGUID("party" .. i)
+    if (guid and guid ~= playerGuid) then
+      unitGuidsInGroup[guid] = true
+    end
+  end
+  for i = 1, 40 do
+    local guid = UnitGUID("raid" .. i)
+    if (guid and guid ~= playerGuid) then
+      unitGuidsInGroup[guid] = true
+    end
+  end
+  
+  -- Perform actions for units who joined the group.
+  for k,v in pairs(unitGuidsInGroup) do
+    
+  end
+  
+  -- Perform actions for units who left the group.
+  for k,v in pairs(TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo) do
+    if (not unitGuidsInGroup[k]) then
+      TollskisHardcoreHelper_ConnectionChecker.PlayerConnectionInfo[k] = nil
+    end
+  end
 end
 
 function EM:Test()
