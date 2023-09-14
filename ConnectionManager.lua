@@ -1,8 +1,8 @@
-TollskisHardcoreHelper_ConnectionChecker = {
+TollskisHardcoreHelper_ConnectionManager = {
   PlayerConnectionInfo = {}, --<guid, { IsDisconnected: boolen, LastMessageTimestamp: int }>
 }
 
-local CC = TollskisHardcoreHelper_ConnectionChecker
+local CM = TollskisHardcoreHelper_ConnectionManager
 
 local groupUnitIds = { "player" }
 for i = 1, 40 do
@@ -12,7 +12,7 @@ for i = 1, 40 do
   groupUnitIds[#groupUnitIds + 1] = "raid" .. i
 end
 
-function CC:CheckGroupConnectionsInterval()
+function CM:CheckGroupConnectionsInterval()
   for i = 1, #groupUnitIds do
     local guid = UnitGUID(groupUnitIds[i])
     if (guid and
@@ -20,25 +20,25 @@ function CC:CheckGroupConnectionsInterval()
         self.PlayerConnectionInfo[guid] and
         GetTime() - self.PlayerConnectionInfo[guid].LastMessageTimestamp > 10 and
         not self.PlayerConnectionInfo[guid].IsDisconnected) then
-      TollskisHardcoreHelper_EventManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
-      local msg = TollskisHardcoreHelper_EventManager:ConvertAddonMessageToNotification("ABCADSFASD", ThhEnum.AddonMessageType.PlayerDisconnected, guid)
-      UIErrorsFrame:AddMessage(msg, 1.000, 1.000, 1.000)
-      self.PlayerConnectionInfo[guid].IsDisconnected = true
+      TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
+      -- local msg = TollskisHardcoreHelper_EventManager:ConvertAddonMessageToNotification("ABCADSFASD", ThhEnum.AddonMessageType.PlayerDisconnected, guid)
+      -- UIErrorsFrame:AddMessage(msg, 1.000, 1.000, 1.000)
+      -- self.PlayerConnectionInfo[guid].IsDisconnected = true
     end
   end
 
   C_Timer.After(5, function()
-    CC:CheckGroupConnectionsInterval()
+    CM:CheckGroupConnectionsInterval()
   end)
 end
 
-function CC:SendHeartbeatInterval()
+function CM:SendHeartbeatInterval()
   local guid = UnitGUID("player")
   if (not self.PlayerConnectionInfo[guid] or GetTime() - self.PlayerConnectionInfo[guid].LastMessageTimestamp >= 2) then
-    TollskisHardcoreHelper_EventManager:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat)
+    TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat)
   end
   
   C_Timer.After(7, function()
-    CC:SendHeartbeatInterval()
+    CM:SendHeartbeatInterval()
   end)
 end
