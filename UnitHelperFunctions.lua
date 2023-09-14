@@ -47,3 +47,8 @@ end
 --   if (UnitGUID("pet") == unitGuid) then return true end
 --   return false
 -- end
+
+function UHF.FindUnitNameByUnitGuid(unitGuid)
+  local unitId = UHF.FindUnitIdByUnitGuid(unitGuid)
+  return UnitName(unitId)
+end

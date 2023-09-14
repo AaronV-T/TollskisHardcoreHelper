@@ -100,41 +100,14 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   local oldHealthStatus = healthStatus[unitId]
   if (newHealthStatus == oldHealthStatus) then return end
 
-  local r = nil
-  local g = nil
-  local b = nil
-  if (updateIsForParty) then
-    r = 0.667
-    g = 0.671
-    b = 0.996
-  end
-
-  local prefix = "You have "
-  if (updateIsForParty) then
-    local unitName = UnitName(unitId)
-    prefix = unitName .. " has "
-  end
-
   if (newHealthStatus == 1) then
-    if (r == nil or g == nil or b == nill) then
-      r = 1.000
-      g = 0.059
-      b = 0.059
-    end
-
-    UIErrorsFrame:AddMessage(prefix .. "critically low health!", r, g, b)
+    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow)
     if (updateIsForPlayer) then
       self:PlaySound("alert2")
       MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, healthPercentage)
     end
   elseif (newHealthStatus == 2 and (oldHealthStatus == nil or oldHealthStatus > newHealthStatus)) then
-    if (r == nil or g == nil or b == nill) then
-      r = 1.000
-      g = 0.404
-      b = 0.000
-    end
-
-    UIErrorsFrame:AddMessage(prefix .. "low health!", r, g, b)
+    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow)
     if (updateIsForPlayer) then
       self:PlaySound("alert3")
       MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, healthPercentage)
@@ -268,40 +241,6 @@ EM.Frame:SetScript("OnEvent", function(_, event, ...) EM:OnEvent(_, event, ...) 
 
 --   return ThhEnum.PlayerRelationshipType.None
 -- end
-
-function EM:ConvertAddonMessageToNotification(playerName, addonMessageType, arg1)
-  if (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected) then
-    local disconnectingPlayerUnitId = UnitHelperFunctions.FindUnitIdByUnitGuid(arg1)
-    local disconnectingPlayerName = UnitName(disconnectingPlayerUnitId)
-    return string.format("%s has disconnected.", disconnectingPlayerName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.EnteredCombat) then
-    return string.format("%s entered combat.", playerName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.LoggingOut) then
-    return string.format("%s is logging out.", playerName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.LogoutCancelled) then
-    return string.format("%s has stopped logging out.", playerName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.HealthCriticallyLow) then
-    return string.format("%s's health is critically low.", playerName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastStarted) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("%s is casting %s.", playerName, spellName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastInterrupted) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("%s's %s cast has been stopped.", playerName, spellName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastSucceeded) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("%s cast %s.", playerName, spellName)
-  end
-
-  return nil
-end
 
 function EM:PlaySound(soundFile)
   local normalEnableDialog = GetCVar("Sound_EnableDialog")

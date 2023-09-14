@@ -21,9 +21,7 @@ function CM:CheckGroupConnectionsInterval()
         GetTime() - self.PlayerConnectionInfo[guid].LastMessageTimestamp > 10 and
         not self.PlayerConnectionInfo[guid].IsDisconnected) then
       TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
-      -- local msg = TollskisHardcoreHelper_EventManager:ConvertAddonMessageToNotification("ABCADSFASD", ThhEnum.AddonMessageType.PlayerDisconnected, guid)
-      -- UIErrorsFrame:AddMessage(msg, 1.000, 1.000, 1.000)
-      -- self.PlayerConnectionInfo[guid].IsDisconnected = true
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, guid)
     end
   end
 

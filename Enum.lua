@@ -12,9 +12,16 @@ ThhEnum = {
     SpellCastInterrupted = 18,
     SpellCastSucceeded = 19,
   },
-  PlayerRelationshipType = {
-    None = 0,
-    Player = 1,
-    Party = 2,
+  NotificationType = {
+    PlayerDisconnected = 1,
+    PlayerReconnected = 2,
+    EnteredCombat = 11,
+    LoggingOut = 13,
+    LogoutCancelled = 14,
+    HealthLow = 15,
+    HealthCriticallyLow = 16,
+    SpellCastStarted = 17,
+    SpellCastInterrupted = 18,
+    SpellCastSucceeded = 19,
   },
 }

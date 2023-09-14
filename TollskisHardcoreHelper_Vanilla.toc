@@ -8,6 +8,7 @@
 ConnectionManager.lua
 Enum.lua
 MessageManager.lua
+NotificationManager.lua
 UnitHelperFunctions.lua
 
 Main.lua

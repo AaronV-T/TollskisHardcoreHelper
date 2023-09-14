@@ -20,9 +20,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     }
   else
     if (TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].IsDisconnected) then
-      local reconnectingPlayerUnitId = UnitHelperFunctions.FindUnitIdByUnitGuid(senderGuid)
-      local reconnectingPlayerName = UnitName(reconnectingPlayerUnitId)
-      UIErrorsFrame:AddMessage(string.format("%s has reconnected.", reconnectingPlayerName), 1.000, 1.000, 1.000)
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerReconnected, senderGuid)
     end
 
     TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].IsDisconnected = false
@@ -34,12 +32,9 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   local addonMessageType, arg1 = strsplit("|", text, 2)
   addonMessageType = tonumber(addonMessageType)
 
-  local notification = TollskisHardcoreHelper_EventManager:ConvertAddonMessageToNotification(senderPlayer, addonMessageType, arg1)
-  if (notification) then
-    local r = 1.000
-    local g = 1.000
-    local b = 1.000
-    UIErrorsFrame:AddMessage(notification, r, g, b)
+  local notificationType = TollskisHardcoreHelper_NotificationManager:ConvertAddonMessageTypeToNotificationType(addonMessageType)
+  if (notificationType) then
+    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(senderPlayer, notificationType, arg1)
   end
 end
 
