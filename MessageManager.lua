@@ -13,6 +13,10 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
   --print("Sender: " .. tostring(senderUnitId) .. ", " .. tostring(senderGuid))
 
+  if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
+    TollskisHardcoreHelper_PlayerStates[senderGuid] = PlayerState.New()
+  end
+
   if (not TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid]) then
     TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid] = {
       IsDisconnected = false,
@@ -26,11 +30,19 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].IsDisconnected = false
     TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].LastMessageTimestamp = GetTime()
   end
-  
-  if(senderUnitId == "player") then return end
 
   local addonMessageType, arg1 = strsplit("|", text, 2)
   addonMessageType = tonumber(addonMessageType)
+
+  if (addonMessageType == ThhEnum.AddonMessageType.EnteredCombat) then
+    TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = true
+  elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
+    TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
+  end
+
+  TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
+  
+  if(senderUnitId == "player") then return end
 
   local notificationType = TollskisHardcoreHelper_NotificationManager:ConvertAddonMessageTypeToNotificationType(addonMessageType)
   if (notificationType) then

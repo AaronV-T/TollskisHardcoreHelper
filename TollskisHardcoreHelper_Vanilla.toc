@@ -10,6 +10,8 @@ Enum.lua
 FlashFrame.lua
 MessageManager.lua
 NotificationManager.lua
+PlayerStates.lua
+RaidFramesManager.lua
 UnitHelperFunctions.lua
 
 Main.lua
