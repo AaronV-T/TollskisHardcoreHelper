@@ -1,6 +1,4 @@
-TollskisHardcoreHelper_ConnectionManager = {
-  PlayerConnectionInfo = {}, --<guid, { IsDisconnected: boolen, LastMessageTimestamp: int }>
-}
+TollskisHardcoreHelper_ConnectionManager = {}
 
 local CM = TollskisHardcoreHelper_ConnectionManager
 
@@ -17,9 +15,10 @@ function CM:CheckGroupConnectionsInterval()
     local guid = UnitGUID(groupUnitIds[i])
     if (guid and
         UnitIsConnected(groupUnitIds[i]) and
-        self.PlayerConnectionInfo[guid] and
-        GetTime() - self.PlayerConnectionInfo[guid].LastMessageTimestamp > 10 and
-        not self.PlayerConnectionInfo[guid].IsDisconnected) then
+        TollskisHardcoreHelper_PlayerStates[guid] and
+        GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 10 and
+        TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected == false) then
+      TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected = true
       TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, guid)
     end
@@ -32,7 +31,7 @@ end
 
 function CM:SendHeartbeatInterval()
   local guid = UnitGUID("player")
-  if (not self.PlayerConnectionInfo[guid] or GetTime() - self.PlayerConnectionInfo[guid].LastMessageTimestamp >= 2) then
+  if (not TollskisHardcoreHelper_PlayerStates[guid] or GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp >= 2) then
     TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat)
   end
   

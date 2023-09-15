@@ -292,9 +292,9 @@ function EM:UpdateGroupMemberInfo()
   end
   
   -- Perform actions for units who left the group.
-  for k,v in pairs(TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo) do
+  for k,v in pairs(TollskisHardcoreHelper_PlayerStates) do
     if (not unitGuidsInGroup[k]) then
-      TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[k] = nil
+      TollskisHardcoreHelper_PlayerStates = nil
     end
   end
 end

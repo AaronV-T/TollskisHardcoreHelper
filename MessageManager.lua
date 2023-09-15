@@ -14,21 +14,15 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   --print("Sender: " .. tostring(senderUnitId) .. ", " .. tostring(senderGuid))
 
   if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
-    TollskisHardcoreHelper_PlayerStates[senderGuid] = PlayerState.New()
-  end
-
-  if (not TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid]) then
-    TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid] = {
-      IsDisconnected = false,
-      LastMessageTimestamp = GetTime(),
-    }
+    local connectionInfo = ConnectionInfo.New(false, GetTime())
+    TollskisHardcoreHelper_PlayerStates[senderGuid] = PlayerState.New(connectionInfo, nil)
   else
-    if (TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].IsDisconnected) then
+    if (TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerReconnected, senderGuid)
     end
 
-    TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].IsDisconnected = false
-    TollskisHardcoreHelper_ConnectionManager.PlayerConnectionInfo[senderGuid].LastMessageTimestamp = GetTime()
+    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected = false
+    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.LastMessageTimestamp = GetTime()
   end
 
   local addonMessageType, arg1 = strsplit("|", text, 2)
@@ -38,6 +32,8 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = true
   elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
+  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected) then
+    TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsDisconnected = true
   end
 
   TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()

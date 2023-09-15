@@ -1,10 +1,10 @@
 TollskisHardcoreHelper_PlayerStates = {} --<guid, PlayerState>
 
 PlayerState = {}
-function PlayerState.New()
+function PlayerState.New(connectionInfo, isInCombat)
   return {
-    IsInCombat = nil,
-    ConnectionInfo = nil,
+    ConnectionInfo = connectionInfo,
+    IsInCombat = isInCombat,
   }
 end
 
