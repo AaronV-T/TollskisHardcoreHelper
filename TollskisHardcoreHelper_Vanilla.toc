@@ -8,6 +8,7 @@
 ConnectionManager.lua
 Enum.lua
 FlashFrame.lua
+HelperFunctions.lua
 MessageManager.lua
 NotificationManager.lua
 PlayerStates.lua

@@ -32,7 +32,7 @@ end
 function CM:SendHeartbeatInterval()
   local guid = UnitGUID("player")
   if (not TollskisHardcoreHelper_PlayerStates[guid] or GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp >= 2) then
-    TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat)
+    TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat, TollskisHardcoreHelper_HelperFunctions.BoolToNumber(UnitAffectingCombat("player")))
   end
   
   C_Timer.After(7, function()

@@ -30,15 +30,17 @@ function RFM:UpdateRaidFrame(frame)
   if (TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected) then
     if (frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Hide() end
     if (not frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Show() end
+
+    -- Todo: Show question mark for combat icon.
   else
     if (not frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Show() end
     if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
-  end
 
-  if (TollskisHardcoreHelper_PlayerStates[guid].IsInCombat) then
-    if (not frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Show() end
-  else
-    if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end
+    if (TollskisHardcoreHelper_PlayerStates[guid].IsInCombat) then
+      if (not frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Show() end
+    else
+      if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end
+    end
   end
 end
 
@@ -49,7 +51,10 @@ function RFM:SetupRaidFrameIcons(frame)
   frame.ThhIconsContainerFrame.ConnectedIcon = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
   frame.ThhIconsContainerFrame.ConnectedIcon:SetPoint("TOPLEFT", frame, 2, -2)
   frame.ThhIconsContainerFrame.ConnectedIcon:SetSize(8, 8)
-  frame.ThhIconsContainerFrame.ConnectedIcon:SetBackdrop({bgFile = "Interface\\Icons\\ability_creature_poison_06"})
+  
+  frame.ThhIconsContainerFrame.ConnectedIcon.Texture = frame.ThhIconsContainerFrame.ConnectedIcon:CreateTexture()
+  frame.ThhIconsContainerFrame.ConnectedIcon.Texture:SetAllPoints()
+  frame.ThhIconsContainerFrame.ConnectedIcon.Texture:SetColorTexture(0, 1, 0)
 
   frame.ThhIconsContainerFrame.ConnectedIcon:SetScript("OnEnter", function(self, button)
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
@@ -72,7 +77,10 @@ function RFM:SetupRaidFrameIcons(frame)
   frame.ThhIconsContainerFrame.DisconnectedIcon = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
   frame.ThhIconsContainerFrame.DisconnectedIcon:SetPoint("TOPLEFT", frame, 2, -2)
   frame.ThhIconsContainerFrame.DisconnectedIcon:SetSize(8, 8)
-  frame.ThhIconsContainerFrame.DisconnectedIcon:SetBackdrop({bgFile = "Interface\\Icons\\ability_rogue_eviscerate"})
+  
+  frame.ThhIconsContainerFrame.DisconnectedIcon.Texture = frame.ThhIconsContainerFrame.DisconnectedIcon:CreateTexture()
+  frame.ThhIconsContainerFrame.DisconnectedIcon.Texture:SetAllPoints()
+  frame.ThhIconsContainerFrame.DisconnectedIcon.Texture:SetColorTexture(1, 0, 0)
 
   frame.ThhIconsContainerFrame.DisconnectedIcon:SetScript("OnEnter", function(self, button)
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
