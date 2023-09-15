@@ -7,6 +7,7 @@
 
 ConnectionManager.lua
 Enum.lua
+FlashFrame.lua
 MessageManager.lua
 NotificationManager.lua
 UnitHelperFunctions.lua

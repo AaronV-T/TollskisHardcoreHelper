@@ -102,16 +102,27 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
 
   if (newHealthStatus == 1) then
     TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow)
+
     if (updateIsForPlayer) then
       self:PlaySound("alert2")
       MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, healthPercentage)
+      TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
     end
-  elseif (newHealthStatus == 2 and (oldHealthStatus == nil or oldHealthStatus > newHealthStatus)) then
-    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow)
+  elseif (newHealthStatus == 2) then
+    if (oldHealthStatus == nil or oldHealthStatus > newHealthStatus) then
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow)
+      
+      if (updateIsForPlayer) then
+        self:PlaySound("alert3")
+        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, healthPercentage)
+      end
+    end
+
     if (updateIsForPlayer) then
-      self:PlaySound("alert3")
-      MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, healthPercentage)
+      TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 2.0, 0.75)
     end
+  else
+    TollskisHardcoreHelper_FlashFrame:StopAnimation()
   end
 
   healthStatus[unitId] = newHealthStatus
@@ -294,5 +305,5 @@ function EM:Test()
   -- text:SetPoint("CENTER")
   -- text:SetText("Hello World")
 
-  C_ChatInfo.SendAddonMessage(MessageManager.AddonMessagePrefix, "Test message!", "PARTY")
+  TollskisHardcoreHelper_FlashFrame:PlayAnimation(10, 1.5)
 end
