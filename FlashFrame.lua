@@ -34,6 +34,9 @@ flashFrame:SetScript('OnUpdate', function(self)
     alpha = self.MaxOpacity - (timeSinceLoopStarted - (phaseDuration * 2)) * da
   end
 
+  if (alpha < 0) then alpha = 0 end
+  if (alpha > 1) then alpha = 1 end
+
   flashFrame:SetAlpha(alpha)
 
   if (alpha > 0) then return end
