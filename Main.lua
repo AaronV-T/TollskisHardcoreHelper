@@ -37,9 +37,22 @@ function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, ta
   MessageManager:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
 end
 
+local AurasToNotify = { -- Key is aura name, value is if we should notify the player if they themselves are affected (if false, only notify when other players are affected by the aura)
+  ["Blessing of Protection"] = true,
+  ["Divine Protection"] = false,
+  ["Divine Shield"] = false,
+}
+
 function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
   local timestamp, event, hideCaster, sourceGuid, sourceName, sourceFlags, sourceRaidFlags, destGuid, destName, destFlags, destRaidflags = CombatLogGetCurrentEventInfo()
   --print("COMBAT_LOG_EVENT_UNFILTERED. " .. tostring(event))
+
+  if (event == "SPELL_AURA_APPLIED") then
+    local amount, auraType = select(12, CombatLogGetCurrentEventInfo())
+    if (AurasToNotify[auraType] == true or (AurasToNotify[auraType] == false and sourceName ~= UnitName("player"))) then
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.AuraApplied, auraType)
+    end
+  end
 end
 
 function EM.EventHandlers.GROUP_ROSTER_UPDATE(self)
@@ -101,20 +114,20 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   if (newHealthStatus == oldHealthStatus) then return end
 
   if (newHealthStatus == 1) then
-    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow)
+    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
 
     if (updateIsForPlayer) then
       self:PlaySound("alert2")
-      MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, healthPercentage)
+      MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, math.floor(healthPercentage * 100))
       TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
     end
   elseif (newHealthStatus == 2) then
     if (oldHealthStatus == nil or oldHealthStatus > newHealthStatus) then
-      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow)
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow, math.floor(healthPercentage * 100))
       
       if (updateIsForPlayer) then
         self:PlaySound("alert3")
-        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, healthPercentage)
+        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, math.floor(healthPercentage * 100))
       end
     end
 
@@ -133,13 +146,6 @@ local SpellsToNotifyOnCastStart = {
 }
 
 local SpellsToNotifyOnCastSucceeded = {
-  [498] = true, -- Divine Protection 1
-  [642] = true, -- Divine Shield 1
-  [1020] = true, -- Divine Shield 2
-  [1022] = true, -- Blessing of Protection 1
-  [5573] = true, -- Divine Protection 2
-  [5599] = true, -- Blessing of Protection 2
-  [10278] = true, -- Blessing of Protection 3
   [19752] = true, -- Divine Intervention
 }
 
@@ -171,9 +177,9 @@ end
 --   --print("UNIT_SPELLCAST_FAILED_QUIET. " .. unitId .. ", " .. tostring(arg2) .. ", " .. tostring(arg3) .. ", " .. tostring(arg4) .. ", " .. tostring(arg5))
 -- end
 
-function EM.EventHandlers.UNIT_SPELLCAST_INTERRUPTED(self, unitId, arg2, arg3, arg4, arg5)
+function EM.EventHandlers.UNIT_SPELLCAST_INTERRUPTED(self, unitId, castId, spellId)
   if (unitId ~= "player") then return end
-  --print("UNIT_SPELLCAST_INTERRUPTED. " .. unitId .. ", " .. tostring(arg2) .. ", " .. tostring(arg3) .. ", " .. tostring(arg4) .. ", " .. tostring(arg5))
+  --print("UNIT_SPELLCAST_INTERRUPTED. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
 
   if (SpellsToNotifyOnCastStart[spellId]) then
     MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastInterrupted, spellId)

@@ -11,7 +11,13 @@ function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
     return
   end
 
-  local notificationKey = string.format("%s!%d!%d", playerWhoNotified, notificationType, arg1)
+  local notificationKey = nil
+  if (arg1 ~= nil) then
+    notificationKey = string.format("%s!%d!%s", playerWhoNotified, notificationType, arg1)
+  else
+    notificationKey = string.format("%s!%d", playerWhoNotified, notificationType)
+  end
+
   local nowTimestamp = GetTime()
   if (self.ShownNotificationTimestamps[notificationKey] and nowTimestamp - self.ShownNotificationTimestamps[notificationKey] < 1) then return end
   self.ShownNotificationTimestamps[notificationKey] = nowTimestamp
@@ -62,6 +68,12 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.SpellCastSucceeded) then
     local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
     return string.format("%s cast %s.", playerWhoNotified, spellName)
+  end
+  if (notificationType == ThhEnum.NotificationType.AuraApplied) then
+    local prefix
+    if (playerWhoNotified == UnitName("player")) then prefix = "You are"
+    else prefix = string.format("%s is", playerWhoNotified) end
+    return string.format("%s affected by %s.", prefix, arg1)
   end
 
   return nil

@@ -23,5 +23,6 @@ ThhEnum = {
     SpellCastStarted = 17,
     SpellCastInterrupted = 18,
     SpellCastSucceeded = 19,
+    AuraApplied = 20,
   },
 }

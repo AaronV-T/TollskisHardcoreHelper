@@ -86,7 +86,7 @@ function MM:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
     return "I have stopped logging out."
   end
   if (addonMessageType == ThhEnum.AddonMessageType.HealthCriticallyLow) then
-    return string.format("Help, my health is at %d%%!", arg1 * 100)
+    return string.format("Help, my health is at %d%%!", arg1)
   end
   if (addonMessageType == ThhEnum.AddonMessageType.SpellCastStarted) then
     local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
