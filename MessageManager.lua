@@ -35,7 +35,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = true
   elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
-  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected) then
+  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected and TollskisHardcoreHelper_PlayerStates[arg1]) then
     TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsDisconnected = true
   end
 

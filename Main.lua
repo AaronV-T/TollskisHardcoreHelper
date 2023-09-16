@@ -301,9 +301,28 @@ end
 
 function EM:Test()
   print("[THH] Test")
-  -- local text = UIParent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-  -- text:SetPoint("CENTER")
-  -- text:SetText("Hello World")
 
-  TollskisHardcoreHelper_FlashFrame:PlayAnimation(10, 1.5)
+  -- print(UnitDetailedThreatSituation("player", "target"))
+  -- local possibleEnemyUnitIds = UnitHelperFunctions.GetPossibleEnemyUnitIds()
+  -- local unitsTargettingMe = {}
+  -- for i = 1, #possibleEnemyUnitIds do
+  --   local guid = UnitGUID(possibleEnemyUnitIds[i])
+  --   if (guid and not unitsTargettingMe[guid]) then
+  --     local isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation("player", possibleEnemyUnitIds[i])
+  --     if (isTanking) then
+  --       unitsTargettingMe[guid] = true
+  --     end
+  --   end
+	-- end
+
+  -- local unitsTargettingMeCount = 0
+  -- for k,v in pairs(unitsTargettingMe) do
+  --   unitsTargettingMeCount = unitsTargettingMeCount + 1
+  -- end
+
+  -- print(unitsTargettingMeCount)
+
+  -- local nameplateMaxDistance = GetCVar("nameplateMaxDistance")
+  -- print(nameplateMaxDistance)
+  -- --SetCVar("nameplateMaxDistance", 40) -- max is 20 in vanilla
 end

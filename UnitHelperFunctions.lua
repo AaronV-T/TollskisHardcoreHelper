@@ -1,4 +1,5 @@
 UnitHelperFunctions = {}
+
 local UHF = UnitHelperFunctions
 
 local validUnitIds = { "focus", "focuspet", "mouseover", "mouseoverpet", "pet", "player", "target", "targetpet" }
@@ -20,8 +21,8 @@ end
 function UHF.FindUnitIdAndGuidByUnitName(unitName)
   for i = 1, #validUnitIds do
     if (UnitName(validUnitIds[i]) == unitName) then
-	  return validUnitIds[i], UnitGUID(validUnitIds[i])
-	end
+	    return validUnitIds[i], UnitGUID(validUnitIds[i])
+	  end
   end
   return nil, nil
 end
@@ -51,4 +52,15 @@ end
 function UHF.FindUnitNameByUnitGuid(unitGuid)
   local unitId = UHF.FindUnitIdByUnitGuid(unitGuid)
   return UnitName(unitId)
+end
+
+function UHF.GetPossibleEnemyUnitIds()
+  local possibleEnemyUnitIds = {}
+  for i = 1, #validUnitIds do
+    if (validUnitIds[i]:match("nameplate") or validUnitIds[i]:match("target")) then
+      possibleEnemyUnitIds[#possibleEnemyUnitIds + 1] = validUnitIds[i]
+    end
+  end
+
+  return possibleEnemyUnitIds
 end

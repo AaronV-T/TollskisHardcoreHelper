@@ -1,5 +1,5 @@
 TollskisHardcoreHelper_NotificationManager = {
-  
+  ShownNotificationTimestamps = {},
 }
 
 local NM = TollskisHardcoreHelper_NotificationManager
@@ -10,6 +10,11 @@ function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
     print("[THH] No notification for notification type " .. tostring(notificationType))
     return
   end
+
+  local notificationKey = string.format("%s!%d!%d", playerWhoNotified, notificationType, arg1)
+  local nowTimestamp = GetTime()
+  if (self.ShownNotificationTimestamps[notificationKey] and nowTimestamp - self.ShownNotificationTimestamps[notificationKey] < 1) then return end
+  self.ShownNotificationTimestamps[notificationKey] = nowTimestamp
 
   local r = 1.000
   local g = 1.000
