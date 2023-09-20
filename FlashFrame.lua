@@ -18,6 +18,11 @@ flashFrame.Texture:SetTexture("Interface\\FullScreenTextures\\LowHealth")
 --flashFrame.Texture:SetDesaturated(true)
 
 flashFrame:SetScript('OnUpdate', function(self)
+  if (not TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts or not TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
+    self:StopAnimation()
+    return
+  end
+
   if (not self.LoopStartTimestamp or not self.LoopsRemaining) then return end
 
   local timeSinceLoopStarted = GetTime() - self.LoopStartTimestamp

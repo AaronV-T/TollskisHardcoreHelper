@@ -43,7 +43,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
 
   TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
   
-  if(senderUnitId == "player") then return end
+  if(senderUnitId == "player" or UnitInRaid("player")) then return end
 
   local notificationType = TollskisHardcoreHelper_NotificationManager:ConvertAddonMessageTypeToNotificationType(addonMessageType)
   if (notificationType) then

@@ -29,6 +29,22 @@ end
 function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
   if (addonName ~= "TollskisHardcoreHelper") then return end
 
+  if (type(_G["TOLLSKISHARDCOREHELPER_SETTINGS"]) ~= "table") then
+		_G["TOLLSKISHARDCOREHELPER_SETTINGS"] = {
+      Options = {
+        EnableLowHealthAlerts = true,
+        EnableLowHealthAlertChatMessages = true,
+        EnableLowHealthAlertScreenFlashing = true,
+        EnableLowHealthAlertSounds = true,
+        EnableLowHealthAlertTextNotifications = true,
+      },
+    }
+	end
+  
+  TollskisHardcoreHelper_Settings = _G["TOLLSKISHARDCOREHELPER_SETTINGS"]
+
+  TollskisHardcoreHelper_OptionWindow:Initialize()
+
   ConnectionManager:CheckGroupConnectionsInterval()
   ConnectionManager:SendHeartbeatInterval()
 end
@@ -90,6 +106,8 @@ local healthStatus = {}
 function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   --print("UNIT_HEALTH: " .. unitId)
 
+  if (not TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts) then return end
+
   local updateIsForPlayer = unitId == "player"
   local updateIsForParty = unitId:match("party")
   if (not updateIsForPlayer and not updateIsForParty) then return end
@@ -114,24 +132,38 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   if (newHealthStatus == oldHealthStatus) then return end
 
   if (newHealthStatus == 1) then
-    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
+    if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications) then
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
+    end
 
     if (updateIsForPlayer) then
-      self:PlaySound("alert2")
-      MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, math.floor(healthPercentage * 100))
-      TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
+      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds) then
+        self:PlaySound("alert2")
+      end
+      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertChatMessages) then
+        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, math.floor(healthPercentage * 100))
+      end
+      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
+        TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
+      end
     end
   elseif (newHealthStatus == 2) then
     if (oldHealthStatus == nil or oldHealthStatus > newHealthStatus) then
-      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow, math.floor(healthPercentage * 100))
+      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications) then
+        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow, math.floor(healthPercentage * 100))
+      end
       
       if (updateIsForPlayer) then
-        self:PlaySound("alert3")
-        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, math.floor(healthPercentage * 100))
+        if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds) then
+          self:PlaySound("alert3")
+        end
+        if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertChatMessages) then
+          MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, math.floor(healthPercentage * 100))
+        end
       end
     end
 
-    if (updateIsForPlayer) then
+    if (updateIsForPlayer and TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
       TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 2.0, 0.75)
     end
   else
@@ -332,6 +364,6 @@ function EM:Test()
   -- print(nameplateMaxDistance)
   -- --SetCVar("nameplateMaxDistance", 40) -- max is 20 in vanilla
 
-  C_ChatInfo.SendAddonMessage("TsHardcoreHelper", "Test message.", "RAID", target)
+  print(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts)
 
 end

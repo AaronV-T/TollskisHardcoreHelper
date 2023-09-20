@@ -11,6 +11,7 @@ FlashFrame.lua
 HelperFunctions.lua
 MessageManager.lua
 NotificationManager.lua
+Options.lua
 PlayerStates.lua
 RaidFramesManager.lua
 UnitHelperFunctions.lua
