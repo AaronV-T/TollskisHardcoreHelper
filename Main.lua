@@ -300,7 +300,7 @@ function EM:UpdateGroupMemberInfo()
   -- Perform actions for units who left the group.
   for k,v in pairs(TollskisHardcoreHelper_PlayerStates) do
     if (not unitGuidsInGroup[k]) then
-      TollskisHardcoreHelper_PlayerStates = nil
+      TollskisHardcoreHelper_PlayerStates[k] = nil
     end
   end
 end
@@ -331,4 +331,7 @@ function EM:Test()
   -- local nameplateMaxDistance = GetCVar("nameplateMaxDistance")
   -- print(nameplateMaxDistance)
   -- --SetCVar("nameplateMaxDistance", 40) -- max is 20 in vanilla
+
+  C_ChatInfo.SendAddonMessage("TsHardcoreHelper", "Test message.", "RAID", target)
+
 end

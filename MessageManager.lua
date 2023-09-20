@@ -9,6 +9,8 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   if (prefix ~= self.AddonMessagePrefix) then return end
   --print("CHAT_MSG_ADDON. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
 
+  if (channel ~= "WHISPER" and channel ~= "PARTY" and channel ~= "RAID") then return end
+
   local senderPlayer, senderRealm = strsplit("-", sender, 2)
   local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
   --print("Sender: " .. tostring(senderUnitId) .. ", " .. tostring(senderGuid))
@@ -60,12 +62,9 @@ function MM:SendMessageToGroup(addonMessageType, arg1)
   self.SentMessageTimestamps[addonMessage] = nowTimestamp
 
   local addonMessageChatType = "WHISPER"
-  if (UnitInParty("player")) then
+  if (UnitInParty("player") or UnitInRaid("player")) then
     local chatMessage = self:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
     if (chatMessage) then SendChatMessage("[THH] " .. chatMessage, "PARTY") end
-    addonMessageChatType = "PARTY"
-  end
-  if (UnitInRaid("player")) then
     addonMessageChatType = "RAID"
   end
 

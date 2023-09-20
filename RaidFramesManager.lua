@@ -50,7 +50,7 @@ function RFM:SetupRaidFrameIcons(frame)
   -- ConnectedIcon
   frame.ThhIconsContainerFrame.ConnectedIcon = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
   frame.ThhIconsContainerFrame.ConnectedIcon:SetPoint("TOPLEFT", frame, 2, -2)
-  frame.ThhIconsContainerFrame.ConnectedIcon:SetSize(8, 8)
+  frame.ThhIconsContainerFrame.ConnectedIcon:SetSize(6, 6)
   
   frame.ThhIconsContainerFrame.ConnectedIcon.Texture = frame.ThhIconsContainerFrame.ConnectedIcon:CreateTexture()
   frame.ThhIconsContainerFrame.ConnectedIcon.Texture:SetAllPoints()
@@ -76,7 +76,7 @@ function RFM:SetupRaidFrameIcons(frame)
   -- DisconnectedIcon
   frame.ThhIconsContainerFrame.DisconnectedIcon = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
   frame.ThhIconsContainerFrame.DisconnectedIcon:SetPoint("TOPLEFT", frame, 2, -2)
-  frame.ThhIconsContainerFrame.DisconnectedIcon:SetSize(8, 8)
+  frame.ThhIconsContainerFrame.DisconnectedIcon:SetSize(6, 6)
   
   frame.ThhIconsContainerFrame.DisconnectedIcon.Texture = frame.ThhIconsContainerFrame.DisconnectedIcon:CreateTexture()
   frame.ThhIconsContainerFrame.DisconnectedIcon.Texture:SetAllPoints()
@@ -101,8 +101,8 @@ function RFM:SetupRaidFrameIcons(frame)
 
   -- InCombatIcon
   frame.ThhIconsContainerFrame.InCombatIcon = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
-  frame.ThhIconsContainerFrame.InCombatIcon:SetPoint("TOPLEFT", frame, 2, -12)
-  frame.ThhIconsContainerFrame.InCombatIcon:SetSize(8, 8)
+  frame.ThhIconsContainerFrame.InCombatIcon:SetPoint("TOPLEFT", frame, 8, -2)
+  frame.ThhIconsContainerFrame.InCombatIcon:SetSize(6, 6)
   frame.ThhIconsContainerFrame.InCombatIcon:SetBackdrop({bgFile = "Interface\\Icons\\ability_warrior_challange"})
 
   frame.ThhIconsContainerFrame.InCombatIcon:SetScript("OnEnter", function(self, button)

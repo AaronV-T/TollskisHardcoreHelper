@@ -13,6 +13,7 @@ Leash timer.
 mana low
 low ammo
 breath warnings
+warning on pvp flagging
 
 Dualbox
 Auto-accept partner trade
