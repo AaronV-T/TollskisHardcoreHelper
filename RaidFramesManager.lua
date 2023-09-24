@@ -1,10 +1,30 @@
-TollskisHardcoreHelper_RaidFramesManager = {}
+TollskisHardcoreHelper_RaidFramesManager = {
+  ARaidFrameUpdateIsQueued = nil,
+  LastRaidFramesUpdateTimestamp = nil,
+}
 
 local RFM = TollskisHardcoreHelper_RaidFramesManager
 
 function RFM:UpdateRaidFrames()
   if (not CompactRaidFrameContainer:IsShown()) then return end
 
+  local now = GetTime()
+  if (self.LastRaidFramesUpdateTimestamp and now - self.LastRaidFramesUpdateTimestamp < 1) then
+    if (not self.ARaidFrameUpdateIsQueued) then
+      C_Timer.After(1 - (now - self.LastRaidFramesUpdateTimestamp), function()
+        RFM:UpdateRaidFrames()
+      end)
+      self.ARaidFrameUpdateIsQueued = true
+    end
+
+    print("Skipping Raid Frame Update")
+    return
+  end
+
+  self.ARaidFrameUpdateIsQueued = false
+  self.LastRaidFramesUpdateTimestamp = now
+
+  print("Updating Raid Frames")
   -- CompactRaidFrameContainer:ApplyToFrames("normal",
   --   function(frame)
   --     print(frame)

@@ -15,14 +15,18 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
   --print("Sender: " .. tostring(senderUnitId) .. ", " .. tostring(senderGuid))
 
+  local shouldUpdateRaidFrames = false
   if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
     local connectionInfo = ConnectionInfo.New(false, GetTime())
     TollskisHardcoreHelper_PlayerStates[senderGuid] = PlayerState.New(connectionInfo, nil)
+    shouldUpdateRaidFrames = true
   elseif (not TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo) then
     TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo = ConnectionInfo.New(false, GetTime())
+    shouldUpdateRaidFrames = true
   else
     if (TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerReconnected, senderGuid)
+      shouldUpdateRaidFrames = true
     end
 
     TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected = false
@@ -33,16 +37,23 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   addonMessageType = tonumber(addonMessageType)
 
   if (addonMessageType == ThhEnum.AddonMessageType.Heartbeat) then
-    TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = TollskisHardcoreHelper_HelperFunctions.NumberToBool(tonumber(arg1))
+    local isInCombat = TollskisHardcoreHelper_HelperFunctions.NumberToBool(tonumber(arg1))
+    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat ~= isInCombat
+    TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = isInCombat
   elseif (addonMessageType == ThhEnum.AddonMessageType.EnteredCombat) then
+    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat ~= true
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = true
   elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
+    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat ~= false
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
   elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected and TollskisHardcoreHelper_PlayerStates[arg1]) then
+    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected ~= true
     TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsDisconnected = true
   end
 
-  TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
+  if (shouldUpdateRaidFrames) then
+    TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
+  end
   
   if(senderUnitId == "player" or UnitInRaid("player")) then return end
 

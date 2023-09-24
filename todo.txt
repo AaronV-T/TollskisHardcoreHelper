@@ -1,6 +1,6 @@
-Throttle RaidFrame update
 Use chat library
 IsConnected instead of IsDisconnected
+Fix health alert for players who log out
 Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, fd, vanish), or silenced/stunned.
   Feign Death
   Vanish
