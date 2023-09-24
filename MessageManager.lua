@@ -29,10 +29,9 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
 
   local addonMessageType, arg1 = strsplit("!", text, 2)
   addonMessageType = tonumber(addonMessageType)
-  if (arg1 ~= nil) then arg1 = tonumber(arg1) end
 
   if (addonMessageType == ThhEnum.AddonMessageType.Heartbeat) then
-    TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = TollskisHardcoreHelper_HelperFunctions.NumberToBool(arg1)
+    TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = TollskisHardcoreHelper_HelperFunctions.NumberToBool(tonumber(arg1))
   elseif (addonMessageType == ThhEnum.AddonMessageType.EnteredCombat) then
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = true
   elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
@@ -54,7 +53,7 @@ end
 function MM:SendMessageToGroup(addonMessageType, arg1)
   local addonMessage = addonMessageType
   if (arg1 ~= nil) then
-    addonMessage = string.format("%d!%d", addonMessageType, arg1)
+    addonMessage = string.format("%d!%s", addonMessageType, arg1)
   end
 
   local nowTimestamp = GetTime()
@@ -88,16 +87,10 @@ function MM:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
     return string.format("Help, my health is at %d%%!", arg1)
   end
   if (addonMessageType == ThhEnum.AddonMessageType.SpellCastStarted) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("I am casting %s.", spellName)
+    return string.format("I am casting %s.", arg1)
   end
   if (addonMessageType == ThhEnum.AddonMessageType.SpellCastInterrupted) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("My %s cast has been stopped.", spellName)
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastSucceeded) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("I cast %s.", spellName)
+    return string.format("My %s cast has been stopped.", arg1)
   end
 
   return nil

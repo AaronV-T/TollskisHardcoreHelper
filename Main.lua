@@ -59,14 +59,37 @@ local AurasToNotify = { -- Key is aura name, value is if we should notify the pl
   ["Divine Shield"] = false,
 }
 
+local SpellsToNotifyOnCastStart = {
+  ["Hearthstone"] = true,
+}
+
 function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
   local timestamp, event, hideCaster, sourceGuid, sourceName, sourceFlags, sourceRaidFlags, destGuid, destName, destFlags, destRaidflags = CombatLogGetCurrentEventInfo()
   --print("COMBAT_LOG_EVENT_UNFILTERED. " .. tostring(event))
 
   if (event == "SPELL_AURA_APPLIED") then
     local amount, auraType = select(12, CombatLogGetCurrentEventInfo())
-    if (AurasToNotify[auraType] == true or (AurasToNotify[auraType] == false and sourceName ~= UnitName("player"))) then
+    if (AurasToNotify[auraType] == true or (AurasToNotify[auraType] == false and sourceGuid ~= UnitGUID("player"))) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.AuraApplied, auraType)
+    end
+  elseif (event == "SPELL_CAST_FAILED") then
+    -- Note: SPELL_CAST_FAILED events are not triggered for other players' failed spell casts.
+    local _, spellName = select(12, CombatLogGetCurrentEventInfo())
+    if (SpellsToNotifyOnCastStart[spellName]) then
+      if (sourceGuid == UnitGUID("player") and UnitInParty("player")) then
+        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastInterrupted, spellName)
+      end
+    end
+  elseif (event == "SPELL_CAST_START") then
+    local _, spellName = select(12, CombatLogGetCurrentEventInfo())
+    if (SpellsToNotifyOnCastStart[spellName]) then
+      if (sourceGuid == UnitGUID("player") and UnitInParty("player")) then
+        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastStarted, spellName)
+      end
+      
+      if (sourceGuid ~= UnitGUID("player") and UnitHelperFunctions.IsUnitGuidInOurPartyOrRaid()) then
+        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.SpellCastStarted, spellName)
+      end
     end
   end
 end
@@ -173,73 +196,6 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   healthStatus[unitId] = newHealthStatus
 end
 
-local SpellsToNotifyOnCastStart = {
-  [8690] = true, -- Hearthstone
-}
-
-local SpellsToNotifyOnCastSucceeded = {
-  [19752] = true, -- Divine Intervention
-}
-
-function EM.EventHandlers.UNIT_SPELLCAST_CHANNEL_START(self, unitId, castId, spellId)
-  if (unitId ~= "player") then return end
-  --print("UNIT_SPELLCAST_CHANNEL_START. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
-
-  if (SpellsToNotifyOnCastStart[spellId]) then
-    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastStarted, spellId)
-  end
-end
-
-function EM.EventHandlers.UNIT_SPELLCAST_CHANNEL_STOP(self, unitId, castId, spellId)
-  if (unitId ~= "player") then return end
-  --print("UNIT_SPELLCAST_CHANNEL_STOP. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
-  
-  if (SpellsToNotifyOnCastStart[spellId]) then
-    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastInterrupted, spellId)
-  end
-end
-
--- function EM.EventHandlers.UNIT_SPELLCAST_FAILED(self, unitId, arg2, arg3, arg4, arg5)
---   if (unitId ~= "player") then return end
---   --print("UNIT_SPELLCAST_FAILED. " .. unitId .. ", " .. tostring(arg2) .. ", " .. tostring(arg3) .. ", " .. tostring(arg4) .. ", " .. tostring(arg5))
--- end
-
--- function EM.EventHandlers.UNIT_SPELLCAST_FAILED_QUIET(self, unitId, arg2, arg3, arg4, arg5)
---   if (unitId ~= "player") then return end
---   --print("UNIT_SPELLCAST_FAILED_QUIET. " .. unitId .. ", " .. tostring(arg2) .. ", " .. tostring(arg3) .. ", " .. tostring(arg4) .. ", " .. tostring(arg5))
--- end
-
-function EM.EventHandlers.UNIT_SPELLCAST_INTERRUPTED(self, unitId, castId, spellId)
-  if (unitId ~= "player") then return end
-  --print("UNIT_SPELLCAST_INTERRUPTED. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
-
-  if (SpellsToNotifyOnCastStart[spellId]) then
-    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastInterrupted, spellId)
-  end
-end
-
-function EM.EventHandlers.UNIT_SPELLCAST_START(self, unitId, castId, spellId)
-  if (unitId ~= "player") then return end
-  --print("UNIT_SPELLCAST_START. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
-
-  if (SpellsToNotifyOnCastStart[spellId]) then
-    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastStarted, spellId)
-  end
-end
-
--- function EM.EventHandlers.UNIT_SPELLCAST_STOP(self, unitId, castId, spellId)
---   if (unitId ~= "player") then return end
---   --print("UNIT_SPELLCAST_STOP. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
--- end
-
-function EM.EventHandlers.UNIT_SPELLCAST_SUCCEEDED(self, unitId, castId, spellId)
-  if (unitId ~= "player") then return end
-  --print("UNIT_SPELLCAST_SUCCEEDED. " .. tostring(unitId) .. ", " .. tostring(castId) .. ", " .. tostring(spellId))
-
-  if (SpellsToNotifyOnCastSucceeded[spellId]) then
-    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastSucceeded, spellId)
-  end
-end
 
 function EM.EventHandlers.UNIT_TARGET(self, unitId)
   --print("UNIT_TARGET: " .. unitId)

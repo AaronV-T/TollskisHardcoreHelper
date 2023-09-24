@@ -58,16 +58,10 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
     return string.format("%s health is critically low.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.SpellCastStarted) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("%s is casting %s.", playerWhoNotified, spellName)
+    return string.format("%s is casting %s.", playerWhoNotified, arg1)
   end
   if (notificationType == ThhEnum.NotificationType.SpellCastInterrupted) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("%s's %s cast has been stopped.", playerWhoNotified, spellName)
-  end
-  if (notificationType == ThhEnum.NotificationType.SpellCastSucceeded) then
-    local spellName, spellRank, spellIcon, spellCastTime, spellMinRange, spellMaxRange = GetSpellInfo(arg1)
-    return string.format("%s cast %s.", playerWhoNotified, spellName)
+    return string.format("%s's %s cast has been stopped.", playerWhoNotified, arg1)
   end
   if (notificationType == ThhEnum.NotificationType.AuraApplied) then
     local prefix
@@ -103,9 +97,6 @@ function NM:ConvertAddonMessageTypeToNotificationType(addonMessageType)
   end
   if (addonMessageType == ThhEnum.AddonMessageType.SpellCastInterrupted) then
     return ThhEnum.NotificationType.SpellCastInterrupted
-  end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastSucceeded) then
-    return ThhEnum.NotificationType.SpellCastSucceeded
   end
 
   return nil

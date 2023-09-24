@@ -34,14 +34,14 @@ function UHF.FindUnitIdByUnitGuid(unitGuid)
   return nil
 end 
 
--- function UHF.IsUnitGuidInOurPartyOrRaid(unitGuid)
---   for i = 1, #validUnitIds do
---     if ((string.match(validUnitIds[i], "party") or string.match(validUnitIds[i], "raid")) and not string.match(validUnitIds[i], "target")) then
---       if (UnitGUID(validUnitIds[i]) == unitGuid) then return true end
---     end
---   end
---   return false
--- end
+function UHF.IsUnitGuidInOurPartyOrRaid(unitGuid)
+  for i = 1, #validUnitIds do
+    if ((string.match(validUnitIds[i], "party") or string.match(validUnitIds[i], "raid")) and not string.match(validUnitIds[i], "target")) then
+      if (UnitGUID(validUnitIds[i]) == unitGuid) then return true end
+    end
+  end
+  return false
+end
 
 -- function UHF.IsUnitGuidPlayerOrPlayerPet(unitGuid)
 --   if (UnitGUID("player") == unitGuid) then return true end

@@ -1,4 +1,4 @@
-Alert on low health
+Show raid combat status
 Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, fd, vanish), or silenced/stunned.
 Low rank combat skill reminders
 Alert when high level mobs are detected, targetted, or targetting player

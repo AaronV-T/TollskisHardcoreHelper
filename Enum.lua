@@ -10,7 +10,6 @@ ThhEnum = {
     HealthCriticallyLow = 16,
     SpellCastStarted = 17,
     SpellCastInterrupted = 18,
-    SpellCastSucceeded = 19,
   },
   NotificationType = {
     PlayerDisconnected = 1,
@@ -22,7 +21,6 @@ ThhEnum = {
     HealthCriticallyLow = 16,
     SpellCastStarted = 17,
     SpellCastInterrupted = 18,
-    SpellCastSucceeded = 19,
     AuraApplied = 20,
   },
 }
