@@ -27,20 +27,23 @@ function RFM:UpdateRaidFrame(frame)
 
   if (not frame.ThhIconsContainerFrame:IsShown()) then frame.ThhIconsContainerFrame:Show() end
 
-  if (TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected) then
+  if (not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo) then
     if (frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Hide() end
-    if (not frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Show() end
-
-    -- Todo: Show question mark for combat icon.
-  else
-    if (not frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Show() end
     if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
-
-    if (TollskisHardcoreHelper_PlayerStates[guid].IsInCombat) then
-      if (not frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Show() end
+  else
+    if (TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected) then
+      if (frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Hide() end
+      if (not frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Show() end
     else
-      if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end
+      if (not frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Show() end
+      if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
     end
+  end
+
+  if (TollskisHardcoreHelper_PlayerStates[guid].IsInCombat) then
+    if (not frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Show() end
+  else
+    if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end
   end
 end
 

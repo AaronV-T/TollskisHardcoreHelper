@@ -1,5 +1,16 @@
-Show raid combat status
+Throttle RaidFrame update
+Use chat library
+IsConnected instead of IsDisconnected
 Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, fd, vanish), or silenced/stunned.
+  Feign Death
+  Vanish
+  Ice Block
+  Divine Intervention
+  Light of Elune
+  AoE Taunt
+  CC
+  Taunt Fail
+Show raid combat status
 Low rank combat skill reminders
 Alert when high level mobs are detected, targetted, or targetting player
 Show how many mobs are in combat with you, with your pet, and with other players. Alert when it is many (e.g. especially for accidental pet pulls).

@@ -5,10 +5,10 @@
 ## Version: 0.0.1
 ## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
 
-ConnectionManager.lua
 Enum.lua
 FlashFrame.lua
 HelperFunctions.lua
+IntervalManager.lua
 MessageManager.lua
 NotificationManager.lua
 Options.lua

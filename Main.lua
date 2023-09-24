@@ -6,7 +6,7 @@ TollskisHardcoreHelper_EventManager = {
 
 local EM = TollskisHardcoreHelper_EventManager
 
-local ConnectionManager = TollskisHardcoreHelper_ConnectionManager
+local IntervalManager = TollskisHardcoreHelper_IntervalManager
 local MessageManager = TollskisHardcoreHelper_MessageManager
 
 -- Slash Commands
@@ -45,8 +45,9 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
 
   TollskisHardcoreHelper_OptionWindow:Initialize()
 
-  ConnectionManager:CheckGroupConnectionsInterval()
-  ConnectionManager:SendHeartbeatInterval()
+  IntervalManager:CheckCombatInterval()
+  IntervalManager:CheckGroupConnectionsInterval()
+  IntervalManager:SendHeartbeatInterval()
 end
 
 function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
@@ -321,5 +322,4 @@ function EM:Test()
   -- --SetCVar("nameplateMaxDistance", 40) -- max is 20 in vanilla
 
   print(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts)
-
 end

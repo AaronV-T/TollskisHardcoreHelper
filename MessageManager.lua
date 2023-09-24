@@ -18,6 +18,8 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
     local connectionInfo = ConnectionInfo.New(false, GetTime())
     TollskisHardcoreHelper_PlayerStates[senderGuid] = PlayerState.New(connectionInfo, nil)
+  elseif (not TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo) then
+    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo = ConnectionInfo.New(false, GetTime())
   else
     if (TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerReconnected, senderGuid)
