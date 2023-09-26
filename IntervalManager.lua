@@ -17,7 +17,7 @@ function IM:CheckCombatInterval()
     if (guid and
         (not TollskisHardcoreHelper_PlayerStates[guid] or
         not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo or
-        TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected)) then
+        not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected)) then
       local isInCombat = UnitAffectingCombat(groupUnitIds[i])
       if (not TollskisHardcoreHelper_PlayerStates[guid]) then
         TollskisHardcoreHelper_PlayerStates[guid] = PlayerState.New(nil, isInCombat)
@@ -52,8 +52,8 @@ function IM:CheckGroupConnectionsInterval()
         TollskisHardcoreHelper_PlayerStates[guid] and
         TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo and
         GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 10 and
-        TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected == false) then
-      TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsDisconnected = true
+        TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
+      TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected = false
       TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, guid)
     end

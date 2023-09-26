@@ -19,19 +19,19 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
 
   local shouldUpdateRaidFrames = false
   if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
-    local connectionInfo = ConnectionInfo.New(false, GetTime())
+    local connectionInfo = ConnectionInfo.New(true, GetTime())
     TollskisHardcoreHelper_PlayerStates[senderGuid] = PlayerState.New(connectionInfo, nil)
     shouldUpdateRaidFrames = true
   elseif (not TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo) then
-    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo = ConnectionInfo.New(false, GetTime())
+    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo = ConnectionInfo.New(true, GetTime())
     shouldUpdateRaidFrames = true
   else
-    if (TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected) then
+    if (not TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsConnected) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerReconnected, senderGuid)
       shouldUpdateRaidFrames = true
     end
 
-    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected = false
+    TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsConnected = true
     TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.LastMessageTimestamp = GetTime()
   end
 
@@ -49,8 +49,8 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat ~= false
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
   elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected and TollskisHardcoreHelper_PlayerStates[arg1] and TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo) then
-    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected ~= true
-    TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsDisconnected = true
+    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsConnected ~= false
+    TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsConnected = false
   end
 
   if (shouldUpdateRaidFrames) then

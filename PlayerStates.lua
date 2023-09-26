@@ -9,9 +9,9 @@ function PlayerState.New(connectionInfo, isInCombat)
 end
 
 ConnectionInfo = {}
-function ConnectionInfo.New(isDisconnected, lastMessageTimestamp)
+function ConnectionInfo.New(isConnected, lastMessageTimestamp)
   return {
-    IsDisconnected = isDisconnected,
+    IsConnected = isConnected,
     LastMessageTimestamp = lastMessageTimestamp,
   }
 end
