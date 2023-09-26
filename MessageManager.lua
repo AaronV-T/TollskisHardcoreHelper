@@ -5,9 +5,11 @@ TollskisHardcoreHelper_MessageManager = {
 
 local MM = TollskisHardcoreHelper_MessageManager
 
+local AceComm = LibStub("AceComm-3.0")
+
 function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
   if (prefix ~= self.AddonMessagePrefix) then return end
-  --print("CHAT_MSG_ADDON. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
+  --print("OnChatMessageAddonEvent. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
 
   if (channel ~= "WHISPER" and channel ~= "PARTY" and channel ~= "RAID") then return end
 
@@ -46,7 +48,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
     shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat ~= false
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
-  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected and TollskisHardcoreHelper_PlayerStates[arg1]) then
+  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected and TollskisHardcoreHelper_PlayerStates[arg1] and TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo) then
     shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsDisconnected ~= true
     TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsDisconnected = true
   end
@@ -64,9 +66,9 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
 end
 
 function MM:SendMessageToGroup(addonMessageType, arg1)
-  local addonMessage = addonMessageType
+  local addonMessage = tostring(addonMessageType)
   if (arg1 ~= nil) then
-    addonMessage = string.format("%d!%s", addonMessageType, arg1)
+    addonMessage = string.format("%s!%s", addonMessageType, arg1)
   end
 
   local nowTimestamp = GetTime()
@@ -84,7 +86,8 @@ function MM:SendMessageToGroup(addonMessageType, arg1)
 
   local target = nil
   if (addonMessageChatType == "WHISPER") then target = UnitName("player") end
-  C_ChatInfo.SendAddonMessage(MM.AddonMessagePrefix, addonMessage, addonMessageChatType, target)
+  --print("Send: " .. addonMessage .. ", " .. addonMessageChatType .. ", " .. tostring(target))
+  AceComm:SendCommMessage(MM.AddonMessagePrefix, addonMessage, addonMessageChatType, target, "NORMAL")
 end
 
 --

@@ -6,6 +6,7 @@ TollskisHardcoreHelper_EventManager = {
 
 local EM = TollskisHardcoreHelper_EventManager
 
+local AceComm = LibStub("AceComm-3.0")
 local IntervalManager = TollskisHardcoreHelper_IntervalManager
 local MessageManager = TollskisHardcoreHelper_MessageManager
 
@@ -45,13 +46,15 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
 
   TollskisHardcoreHelper_OptionWindow:Initialize()
 
-  IntervalManager:CheckCombatInterval()
-  IntervalManager:CheckGroupConnectionsInterval()
-  IntervalManager:SendHeartbeatInterval()
-end
+  AceComm:RegisterComm(TollskisHardcoreHelper_MessageManager.AddonMessagePrefix, function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
+    MessageManager:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
+  end)
 
-function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
-  MessageManager:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
+  C_Timer.After(1, function()
+    IntervalManager:CheckCombatInterval()
+    IntervalManager:CheckGroupConnectionsInterval()
+    IntervalManager:SendHeartbeatInterval()
+  end)
 end
 
 local AurasToNotify = { -- Key is aura name, value is if we should notify the player if they themselves are affected (if false, only notify when other players are affected by the aura)
