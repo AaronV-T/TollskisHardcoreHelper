@@ -56,6 +56,7 @@ end
 
 local AurasToNotify = { -- Key is aura name, value is if we should notify the player if they themselves are affected (if false, only notify when other players are affected by the aura)
   ["Blessing of Protection"] = true,
+  ["Divine Intervention"] = true,
   ["Divine Protection"] = false,
   ["Divine Shield"] = false,
 }
@@ -70,8 +71,8 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
 
   if (event == "SPELL_AURA_APPLIED") then
     local amount, auraType = select(12, CombatLogGetCurrentEventInfo())
-    if (AurasToNotify[auraType] == true or (AurasToNotify[auraType] == false and sourceGuid ~= UnitGUID("player"))) then
-      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.AuraApplied, auraType)
+    if (AurasToNotify[auraType] == true or (AurasToNotify[auraType] == false and destGuid ~= UnitGUID("player"))) then
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(destName, ThhEnum.NotificationType.AuraApplied, auraType)
     end
   elseif (event == "SPELL_CAST_FAILED") then
     -- Note: SPELL_CAST_FAILED events are not triggered for other players' failed spell casts.
@@ -155,7 +156,7 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   local oldHealthStatus = healthStatus[unitId]
   if (newHealthStatus == oldHealthStatus) then return end
 
-  if (newHealthStatus == 1) then
+  if (newHealthStatus == 1 and healthPercentage > 0.00001) then
     if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
     end
@@ -190,7 +191,7 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
     if (updateIsForPlayer and TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
       TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 2.0, 0.75)
     end
-  else
+  elseif (updateIsForPlayer) then
     TollskisHardcoreHelper_FlashFrame:StopAnimation()
   end
 
