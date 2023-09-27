@@ -38,6 +38,7 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
         EnableLowHealthAlertScreenFlashing = true,
         EnableLowHealthAlertSounds = true,
         EnableLowHealthAlertTextNotifications = true,
+        ShowIconsOnRaidFrames = true,
       },
     }
 	end

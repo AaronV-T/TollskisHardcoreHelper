@@ -38,8 +38,11 @@ function RFM:UpdateRaidFrame(frame)
 
   if (not frame.ThhIconsContainerFrame) then RFM:SetupRaidFrameIcons(frame) end
 
-  if (not TollskisHardcoreHelper_PlayerStates[guid]) then
-    frame.ThhIconsContainerFrame:Hide()
+  if (not TollskisHardcoreHelper_PlayerStates[guid] or not TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames) then
+    if (frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Hide() end
+    if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
+    if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end
+
     return
   end
 

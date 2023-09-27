@@ -41,6 +41,13 @@ function TollskisHardcoreHelper_OptionWindow:Initialize()
   self.fsEnableLowHealthAlertTextNotifications:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
   self.fsEnableLowHealthAlertTextNotifications:SetText("Enable onscreen text notifications when you or a party member has low health.")
   yPos = yPos - 30
+
+  self.cbShowIconsOnRaidFrames = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbShowIconsOnRaidFrames:SetPoint("LEFT", self, "TOPLEFT", 10, yPos)
+  self.fsShowIconsOnRaidFrames = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsShowIconsOnRaidFrames:SetPoint("LEFT", self, "TOPLEFT", 40, yPos)
+  self.fsShowIconsOnRaidFrames:SetText("Show Icons on Raid Frames")
+  yPos = yPos - 30
   
   self:LoadOptions()
 end
@@ -51,6 +58,7 @@ function TollskisHardcoreHelper_OptionWindow:LoadOptions()
   self.cbEnableLowHealthAlertScreenFlashing:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing)
   self.cbEnableLowHealthAlertSounds:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds)
   self.cbEnableLowHealthAlertTextNotifications:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications)
+  self.cbShowIconsOnRaidFrames:SetChecked(TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames)
 end
 
 function TollskisHardcoreHelper_OptionWindow:SaveOptions()
@@ -59,6 +67,10 @@ function TollskisHardcoreHelper_OptionWindow:SaveOptions()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing = self.cbEnableLowHealthAlertScreenFlashing:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds = self.cbEnableLowHealthAlertSounds:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications = self.cbEnableLowHealthAlertTextNotifications:GetChecked()
+
+  local shouldUpdateRaidFrames = TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames ~= self.cbShowIconsOnRaidFrames:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames = self.cbShowIconsOnRaidFrames:GetChecked()
+  if (shouldUpdateRaidFrames) then TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames() end
 end
 
 TollskisHardcoreHelper_OptionWindow.name = "Tollski's Hardcore Helper"
