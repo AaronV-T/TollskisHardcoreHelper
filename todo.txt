@@ -1,12 +1,8 @@
+Less sensitive disconnect alert
 Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, fd, vanish), or silenced/stunned.
-  Feign Death
-  Vanish
-  Ice Block
-  Divine Intervention
-  Light of Elune
   AoE Taunt
   CC
-  Taunt Fail
+  Taunt Fail/Success
 Low rank combat skill reminders
 Alert when high level mobs are detected, targetted, or targetting player
 Show how many mobs are in combat with you, with your pet, and with other players. Alert when it is many (e.g. especially for accidental pet pulls).

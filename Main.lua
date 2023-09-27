@@ -62,6 +62,10 @@ local AurasToNotify = { -- Key is aura name, value is if we should notify the pl
   ["Divine Intervention"] = true,
   ["Divine Protection"] = false,
   ["Divine Shield"] = false,
+  ["Feign Death"] = false, -- unconfirmed
+  ["Ice Block"] = false, -- unconfirmed
+  ["Light of Elune"] = false, -- unconfirmed
+  ["Vanish"] = false, -- unconfirmed
 }
 
 local SpellsToNotifyOnCastStart = {
@@ -92,7 +96,7 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
         MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.SpellCastStarted, spellName)
       end
       
-      if (sourceGuid ~= UnitGUID("player") and UnitHelperFunctions.IsUnitGuidInOurPartyOrRaid()) then
+      if (sourceGuid ~= UnitGUID("player") and UnitHelperFunctions.IsUnitGuidInOurPartyOrRaid(sourceGuid)) then
         TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.SpellCastStarted, spellName)
       end
     end

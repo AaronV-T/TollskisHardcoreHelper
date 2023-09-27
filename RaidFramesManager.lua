@@ -17,14 +17,12 @@ function RFM:UpdateRaidFrames()
       self.ARaidFrameUpdateIsQueued = true
     end
 
-    print("Skipping Raid Frame Update")
     return
   end
 
   self.ARaidFrameUpdateIsQueued = false
   self.LastRaidFramesUpdateTimestamp = now
 
-  print("Updating Raid Frames")
   -- CompactRaidFrameContainer:ApplyToFrames("normal",
   --   function(frame)
   --     print(frame)
