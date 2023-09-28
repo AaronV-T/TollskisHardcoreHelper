@@ -33,8 +33,11 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
   if (type(_G["TOLLSKISHARDCOREHELPER_SETTINGS"]) ~= "table") then
 		_G["TOLLSKISHARDCOREHELPER_SETTINGS"] = {
       Options = {
+        EnableChatMessages = true,
+        EnableChatMessagesLogout = true,
+        EnableChatMessagesLowHealth = true,
+        EnableChatMessagesSpellCasts = true,
         EnableLowHealthAlerts = true,
-        EnableLowHealthAlertChatMessages = true,
         EnableLowHealthAlertScreenFlashing = true,
         EnableLowHealthAlertSounds = true,
         EnableLowHealthAlertTextNotifications = true,
@@ -173,9 +176,9 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
       if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds) then
         self:PlaySound("alert2")
       end
-      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertChatMessages) then
-        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, math.floor(healthPercentage * 100))
-      end
+
+      MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, math.floor(healthPercentage * 100))
+
       if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
         TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
       end
@@ -190,9 +193,8 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
         if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds) then
           self:PlaySound("alert3")
         end
-        if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertChatMessages) then
-          MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, math.floor(healthPercentage * 100))
-        end
+
+        MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthLow, math.floor(healthPercentage * 100))
       end
     end
 

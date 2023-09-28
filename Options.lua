@@ -7,18 +7,39 @@ function TollskisHardcoreHelper_OptionWindow:Initialize()
   
   local yPos = -50
 
+  self.cbEnableChatMessages = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableChatMessages:SetPoint("LEFT", self, "TOPLEFT", 10, yPos)
+  self.fsEnableChatMessages = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableChatMessages:SetPoint("LEFT", self, "TOPLEFT", 40, yPos)
+  self.fsEnableChatMessages:SetText("Enable Chat Messages")
+  yPos = yPos - 30
+
+  self.cbEnableChatMessagesLogout = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableChatMessagesLogout:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableChatMessagesLogout = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableChatMessagesLogout:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableChatMessagesLogout:SetText("Send chat messages when you are logging out.")
+  yPos = yPos - 30
+
+  self.cbEnableChatMessagesLowHealth = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableChatMessagesLowHealth:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableChatMessagesLowHealth = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableChatMessagesLowHealth:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableChatMessagesLowHealth:SetText("Send chat messages when your health is critically low. (Requires low health alerts to be enabled.)")
+  yPos = yPos - 30
+
+  self.cbEnableChatMessagesSpellCasts = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableChatMessagesSpellCasts:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableChatMessagesSpellCasts = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableChatMessagesSpellCasts:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableChatMessagesSpellCasts:SetText("Send chat messages when you cast certain spells (e.g. Hearthstone).")
+  yPos = yPos - 30
+
   self.cbEnableLowHealthAlerts = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
   self.cbEnableLowHealthAlerts:SetPoint("LEFT", self, "TOPLEFT", 10, yPos)
   self.fsEnableLowHealthAlerts = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
   self.fsEnableLowHealthAlerts:SetPoint("LEFT", self, "TOPLEFT", 40, yPos)
   self.fsEnableLowHealthAlerts:SetText("Enable Low Health Alerts")
-  yPos = yPos - 30
-
-  self.cbEnableLowHealthAlertChatMessages = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
-  self.cbEnableLowHealthAlertChatMessages:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
-  self.fsEnableLowHealthAlertChatMessages = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-  self.fsEnableLowHealthAlertChatMessages:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
-  self.fsEnableLowHealthAlertChatMessages:SetText("Enable sending chat messages to your party when your health is critically low.")
   yPos = yPos - 30
 
   self.cbEnableLowHealthAlertScreenFlashing = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
@@ -53,8 +74,11 @@ function TollskisHardcoreHelper_OptionWindow:Initialize()
 end
 
 function TollskisHardcoreHelper_OptionWindow:LoadOptions()
+  self.cbEnableChatMessages:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableChatMessages)
+  self.cbEnableChatMessagesLogout:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLogout)
+  self.cbEnableChatMessagesLowHealth:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLowHealth)
+  self.cbEnableChatMessagesSpellCasts:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableChatMessagesSpellCasts)
   self.cbEnableLowHealthAlerts:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts)
-  self.cbEnableLowHealthAlertChatMessages:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertChatMessages)
   self.cbEnableLowHealthAlertScreenFlashing:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing)
   self.cbEnableLowHealthAlertSounds:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds)
   self.cbEnableLowHealthAlertTextNotifications:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications)
@@ -62,8 +86,11 @@ function TollskisHardcoreHelper_OptionWindow:LoadOptions()
 end
 
 function TollskisHardcoreHelper_OptionWindow:SaveOptions()
+  TollskisHardcoreHelper_Settings.Options.EnableChatMessages = self.cbEnableChatMessages:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLogout = self.cbEnableChatMessagesLogout:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLowHealth = self.cbEnableChatMessagesLowHealth:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableChatMessagesSpellCasts = self.cbEnableChatMessagesSpellCasts:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts = self.cbEnableLowHealthAlerts:GetChecked()
-  TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertChatMessages = self.cbEnableLowHealthAlertChatMessages:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing = self.cbEnableLowHealthAlertScreenFlashing:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds = self.cbEnableLowHealthAlertSounds:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications = self.cbEnableLowHealthAlertTextNotifications:GetChecked()

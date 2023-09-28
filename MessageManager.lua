@@ -76,7 +76,7 @@ function MM:SendMessageToGroup(addonMessageType, arg1)
   self.SentMessageTimestamps[addonMessage] = nowTimestamp
 
   local addonMessageChatType = "WHISPER"
-  if (UnitInParty("player") or UnitInRaid("player")) then
+  if (TollskisHardcoreHelper_Settings.Options.EnableChatMessages and (UnitInParty("player") or UnitInRaid("player"))) then
     local chatMessage = self:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
     if (chatMessage) then SendChatMessage("[THH] " .. chatMessage, "PARTY") end
     addonMessageChatType = "RAID"
@@ -93,19 +93,19 @@ end
 --
 
 function MM:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
-  if (addonMessageType == ThhEnum.AddonMessageType.LoggingOut) then
+  if (addonMessageType == ThhEnum.AddonMessageType.LoggingOut and TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLogout) then
     return "I am logging out."
   end
-  if (addonMessageType == ThhEnum.AddonMessageType.LogoutCancelled) then
+  if (addonMessageType == ThhEnum.AddonMessageType.LogoutCancelled and TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLogout) then
     return "I have stopped logging out."
   end
-  if (addonMessageType == ThhEnum.AddonMessageType.HealthCriticallyLow) then
+  if (addonMessageType == ThhEnum.AddonMessageType.HealthCriticallyLow and TollskisHardcoreHelper_Settings.Options.EnableChatMessagesLowHealth) then
     return string.format("Help, my health is at %d%%!", arg1)
   end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastStarted) then
+  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastStarted and TollskisHardcoreHelper_Settings.Options.EnableChatMessagesSpellCasts) then
     return string.format("I am casting %s.", arg1)
   end
-  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastInterrupted) then
+  if (addonMessageType == ThhEnum.AddonMessageType.SpellCastInterrupted and TollskisHardcoreHelper_Settings.Options.EnableChatMessagesSpellCasts) then
     return string.format("My %s cast has been stopped.", arg1)
   end
 
