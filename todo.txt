@@ -1,4 +1,5 @@
-Less sensitive disconnect alert
+Less sensitive disconnect alert (send message before and after loading screens, clear timestamps after loading, send confirmation message for disconnecting client to respond to)
+Sending messages and seeing notifications for raid members
 Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, fd, vanish), or silenced/stunned.
   AoE Taunt
   CC

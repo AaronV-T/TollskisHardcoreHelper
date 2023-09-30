@@ -51,7 +51,7 @@ function IM:CheckGroupConnectionsInterval()
         UnitIsConnected(groupUnitIds[i]) and
         TollskisHardcoreHelper_PlayerStates[guid] and
         TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo and
-        GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 10 and
+        GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 13 and
         TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
       TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected = false
       TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
@@ -66,13 +66,20 @@ end
 
 function IM:SendHeartbeatInterval()
   local guid = UnitGUID("player")
-  if (not TollskisHardcoreHelper_PlayerStates[guid] or
-      not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo or
-      GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp >= 2) then
-    TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat, TollskisHardcoreHelper_HelperFunctions.BoolToNumber(UnitAffectingCombat("player")))
+
+  local timeSinceLastSentMessage = nil
+  if (TollskisHardcoreHelper_PlayerStates[guid] and TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo) then
+    timeSinceLastSentMessage = GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp
+  end
+
+  local delay = 10
+  if (timeSinceLastSentMessage == nil or timeSinceLastSentMessage >= (10 - 0.01)) then
+    TollskisHardcoreHelper_MessageManager:SendHeartbeatMessage()
+  else
+    delay = 10 - timeSinceLastSentMessage
   end
   
-  C_Timer.After(7, function()
+  C_Timer.After(delay, function()
     IM:SendHeartbeatInterval()
   end)
 end

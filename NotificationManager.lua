@@ -27,6 +27,7 @@ function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
   local b = 1.000
   UIErrorsFrame:AddMessage(notification, r, g, b)
   print("[THH] " .. notification)
+  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("Notification: %s", notification))
 end
 
 function NM:GetNotification(playerWhoNotified, notificationType, arg1)

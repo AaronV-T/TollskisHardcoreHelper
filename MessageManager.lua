@@ -5,17 +5,16 @@ TollskisHardcoreHelper_MessageManager = {
 
 local MM = TollskisHardcoreHelper_MessageManager
 
-local AceComm = LibStub("AceComm-3.0")
-
 function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
   if (prefix ~= self.AddonMessagePrefix) then return end
   --print("OnChatMessageAddonEvent. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
+  --print(string.format("%d - ReceivedMessage: %s, %s", GetTime(), text,  sender))
+  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - ReceivedMessage: %s, %s", GetTime(), text,  sender))
 
   if (channel ~= "WHISPER" and channel ~= "PARTY" and channel ~= "RAID") then return end
 
   local senderPlayer, senderRealm = strsplit("-", sender, 2)
   local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
-  --print("Sender: " .. tostring(senderUnitId) .. ", " .. tostring(senderGuid))
 
   local shouldUpdateRaidFrames = false
   if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
@@ -86,8 +85,13 @@ function MM:SendMessageToGroup(addonMessageType, arg1)
 
   local target = nil
   if (addonMessageChatType == "WHISPER") then target = UnitName("player") end
-  --print("Send: " .. addonMessage .. ", " .. addonMessageChatType .. ", " .. tostring(target))
-  AceComm:SendCommMessage(MM.AddonMessagePrefix, addonMessage, addonMessageChatType, target, "NORMAL")
+
+  --print(string.format("%d - SendMessage: %s", GetTime(), addonMessage))
+  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - SendMessage: %s", GetTime(), addonMessage))
+
+  -- Note: I tried using ChatThrottleLib but messages were more likely to not be sent. I tested C_ChatInfo.SendAddonMessage with many messages and have found that 
+  -- if messages are sent too quickly then they won't be sent, but the player won't be disconnected.
+  C_ChatInfo.SendAddonMessage(MM.AddonMessagePrefix, addonMessage, addonMessageChatType, target)
 end
 
 --
@@ -110,4 +114,8 @@ function MM:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
   end
 
   return nil
+end
+
+function MM:SendHeartbeatMessage()
+  self:SendMessageToGroup(ThhEnum.AddonMessageType.Heartbeat, TollskisHardcoreHelper_HelperFunctions.BoolToNumber(UnitAffectingCombat("player")))
 end

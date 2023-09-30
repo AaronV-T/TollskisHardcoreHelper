@@ -1,6 +1,7 @@
 TollskisHardcoreHelper_Settings = nil
 
 TollskisHardcoreHelper_EventManager = {
+  DebugLogs = {},
   EventHandlers = {},
 }
 
@@ -15,6 +16,11 @@ local MessageManager = TollskisHardcoreHelper_MessageManager
 SLASH_TOLLSKISHARDCOREHELPER1, SLASH_TOLLSKISHARDCOREHELPER2 = "/tollskishardcorehelper", "/thh"
 function SlashCmdList.TOLLSKISHARDCOREHELPER()
   EM:Test()
+end
+
+SLASH_TOLLSKISHARDCOREHELPERDEBUG1, SLASH_TOLLSKISHARDCOREHELPERDEBUG2 = "/tollskishardcorehelperdebug", "/thhdebug"
+function SlashCmdList.TOLLSKISHARDCOREHELPERDEBUG()
+  EM:Debug()
 end
 
 -- *** Locals ***
@@ -49,16 +55,10 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
   TollskisHardcoreHelper_Settings = _G["TOLLSKISHARDCOREHELPER_SETTINGS"]
 
   TollskisHardcoreHelper_OptionWindow:Initialize()
+end
 
-  AceComm:RegisterComm(TollskisHardcoreHelper_MessageManager.AddonMessagePrefix, function(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
-    MessageManager:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
-  end)
-
-  C_Timer.After(1, function()
-    IntervalManager:CheckCombatInterval()
-    IntervalManager:CheckGroupConnectionsInterval()
-    IntervalManager:SendHeartbeatInterval()
-  end)
+function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
+  MessageManager:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
 end
 
 local AurasToNotify = { -- Key is aura name, value is if we should notify the player if they themselves are affected (if false, only notify when other players are affected by the aura)
@@ -68,7 +68,9 @@ local AurasToNotify = { -- Key is aura name, value is if we should notify the pl
   ["Divine Shield"] = false,
   ["Feign Death"] = false, -- unconfirmed
   ["Ice Block"] = false, -- unconfirmed
+  ["Invulnerability"] = false, -- unconfirmed Limited Invulnerability Potion
   ["Light of Elune"] = false, -- unconfirmed
+  ["Petrification"] = false, --unconfirmed Flask of Petrification
   ["Vanish"] = false, -- unconfirmed
 }
 
@@ -118,7 +120,21 @@ function EM.EventHandlers.PLAYER_ENTERING_WORLD(self, isLogin, isReload)
   
   if (isLogin or isReload) then
     C_ChatInfo.RegisterAddonMessagePrefix(MessageManager.AddonMessagePrefix)
+  
+    IntervalManager:CheckCombatInterval()
+    IntervalManager:CheckGroupConnectionsInterval()
+    IntervalManager:SendHeartbeatInterval()
+  else
+    TollskisHardcoreHelper_PlayerStates = {}
+    MessageManager:SendHeartbeatMessage()
   end
+end
+
+function EM.EventHandlers.PLAYER_LEAVING_WORLD(self)
+  --print("PLAYER_LEAVING_WORLD.")
+
+  --This message only seems to actually get sent when reloading, not when going through instance portals.
+  MessageManager:SendHeartbeatMessage()
 end
 
 function EM.EventHandlers.PLAYER_REGEN_DISABLED(self)
@@ -305,6 +321,7 @@ function EM:UpdateGroupMemberInfo()
   end
 end
 
+local testNum = 1
 function EM:Test()
   print("[THH] Test")
 
@@ -332,5 +349,15 @@ function EM:Test()
   -- print(nameplateMaxDistance)
   -- --SetCVar("nameplateMaxDistance", 40) -- max is 20 in vanilla
 
-  print(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts)
+  local r = C_ChatInfo.SendAddonMessage(MessageManager.AddonMessagePrefix, "TEST" .. testNum, "RAID", nil)
+  print("Send TEST" .. testNum .. ", " .. tostring(r))
+  testNum = testNum + 1
+end
+
+function EM:Debug()
+  local startIndex = #self.DebugLogs - 50
+  if (startIndex < 1) then startIndex = 1 end
+  for i = startIndex, #self.DebugLogs do
+    print(i .. " - " .. self.DebugLogs[i])
+  end
 end
