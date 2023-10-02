@@ -37,6 +37,9 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.PlayerReconnected) then
     return string.format("%s has reconnected.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
   end
+  if (notificationType == ThhEnum.NotificationType.PlayerOffline) then
+    return string.format("%s has gone offline.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
+  end
   if (notificationType == ThhEnum.NotificationType.EnteredCombat) then
     return string.format("%s entered combat.", playerWhoNotified)
   end

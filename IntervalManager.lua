@@ -15,6 +15,7 @@ function IM:CheckCombatInterval()
   for i = 1, #groupUnitIds do
     local guid = UnitGUID(groupUnitIds[i])
     if (guid and
+        UnitIsConnected(groupUnitIds[i]) and
         (not TollskisHardcoreHelper_PlayerStates[guid] or
         not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo or
         not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected)) then
@@ -48,7 +49,14 @@ function IM:CheckGroupConnectionsInterval()
   for i = 1, #groupUnitIds do
     local guid = UnitGUID(groupUnitIds[i])
     if (guid and
-        UnitIsConnected(groupUnitIds[i]) and
+        not UnitIsConnected(groupUnitIds[i]) and
+        TollskisHardcoreHelper_PlayerStates[guid]) then
+      TollskisHardcoreHelper_PlayerStates[guid] = nil
+      TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
+      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerOffline, guid)
+    end
+
+    if (guid and
         TollskisHardcoreHelper_PlayerStates[guid] and
         TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo and
         GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 13 and

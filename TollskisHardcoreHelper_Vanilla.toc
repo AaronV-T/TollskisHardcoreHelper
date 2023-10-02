@@ -5,8 +5,6 @@
 ## Version: 0.0.1
 ## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
 
-embeds.xml
-
 Enum.lua
 FlashFrame.lua
 HelperFunctions.lua

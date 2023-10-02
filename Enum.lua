@@ -14,6 +14,7 @@ ThhEnum = {
   NotificationType = {
     PlayerDisconnected = 1,
     PlayerReconnected = 2,
+    PlayerOffline = 3,
     EnteredCombat = 11,
     LoggingOut = 13,
     LogoutCancelled = 14,

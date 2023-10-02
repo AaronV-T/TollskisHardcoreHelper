@@ -16,6 +16,11 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   local senderPlayer, senderRealm = strsplit("-", sender, 2)
   local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
 
+  if (not senderUnitId or not senderGuid) then
+    table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("Failed to find UnitId or Guid for message sender: %s", senderPlayer))
+    return
+  end
+
   local shouldUpdateRaidFrames = false
   if (not TollskisHardcoreHelper_PlayerStates[senderGuid]) then
     local connectionInfo = ConnectionInfo.New(true, GetTime())

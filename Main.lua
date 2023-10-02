@@ -7,7 +7,6 @@ TollskisHardcoreHelper_EventManager = {
 
 local EM = TollskisHardcoreHelper_EventManager
 
-local AceComm = LibStub("AceComm-3.0")
 local IntervalManager = TollskisHardcoreHelper_IntervalManager
 local MessageManager = TollskisHardcoreHelper_MessageManager
 
@@ -110,6 +109,7 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
 end
 
 function EM.EventHandlers.GROUP_ROSTER_UPDATE(self)
+  --print("GROUP_ROSTER_UPDATE.")
   self:UpdateGroupMemberInfo()
 end
 
@@ -294,23 +294,24 @@ function EM:UpdateGroupMemberInfo()
   local playerGuid = UnitGUID("player")
   local unitGuidsInGroup = { }
 
-  unitGuidsInGroup[playerGuid] = true
+  unitGuidsInGroup[playerGuid] = "player"
   for i = 1, 4 do
-    local guid = UnitGUID("party" .. i)
+    local unitId = "party" .. i
+    local guid = UnitGUID(unitId)
     if (guid and guid ~= playerGuid) then
-      unitGuidsInGroup[guid] = true
+      unitGuidsInGroup[guid] = unitId
     end
   end
   for i = 1, 40 do
-    local guid = UnitGUID("raid" .. i)
+    local unitId = "raid" .. i
+    local guid = UnitGUID(unitId)
     if (guid and guid ~= playerGuid) then
-      unitGuidsInGroup[guid] = true
+      unitGuidsInGroup[guid] = unitId
     end
   end
   
-  -- Perform actions for units who joined the group.
+  -- Perform actions for units who are in the group.
   for k,v in pairs(unitGuidsInGroup) do
-    
   end
   
   -- Perform actions for units who left the group.
