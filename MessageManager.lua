@@ -9,7 +9,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   if (prefix ~= self.AddonMessagePrefix) then return end
   --print("OnChatMessageAddonEvent. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
   --print(string.format("%d - ReceivedMessage: %s, %s", GetTime(), text,  sender))
-  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - ReceivedMessage: %s, %s", GetTime(), text,  sender))
+  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - ReceivedMessage: %s, %s", time(), text,  sender))
 
   if (channel ~= "WHISPER" and channel ~= "PARTY" and channel ~= "RAID") then return end
 
@@ -17,7 +17,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   local senderUnitId, senderGuid = UnitHelperFunctions.FindUnitIdAndGuidByUnitName(senderPlayer)
 
   if (not senderUnitId or not senderGuid) then
-    table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("Failed to find UnitId or Guid for message sender: %s", senderPlayer))
+    table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - Failed to find UnitId or Guid for message sender: %s", time(), senderPlayer))
     return
   end
 
@@ -52,9 +52,21 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
   elseif (addonMessageType == ThhEnum.AddonMessageType.ExitedCombat) then
     shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat ~= false
     TollskisHardcoreHelper_PlayerStates[senderGuid].IsInCombat = false
-  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerDisconnected and TollskisHardcoreHelper_PlayerStates[arg1] and TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo) then
-    shouldUpdateRaidFrames = shouldUpdateRaidFrames or TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsConnected ~= false
-    TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsConnected = false
+  elseif (addonMessageType == ThhEnum.AddonMessageType.PlayerConnectionCheck) then
+    if (arg1 == UnitGUID("player")) then
+      self:SendHeartbeatMessage()
+    end
+
+    C_Timer.After(1, function()
+      if (TollskisHardcoreHelper_PlayerStates[arg1] and
+          TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo and
+          GetTime() - TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.LastMessageTimestamp > 14 and
+          TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsConnected == true) then
+        TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsConnected = false
+        TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
+        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, arg1)
+      end
+    end)
   end
 
   if (shouldUpdateRaidFrames) then
@@ -92,7 +104,7 @@ function MM:SendMessageToGroup(addonMessageType, arg1)
   if (addonMessageChatType == "WHISPER") then target = UnitName("player") end
 
   --print(string.format("%d - SendMessage: %s", GetTime(), addonMessage))
-  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - SendMessage: %s", GetTime(), addonMessage))
+  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - SendMessage: %s", time(), addonMessage))
 
   -- Note: I tried using ChatThrottleLib but messages were more likely to not be sent. I tested C_ChatInfo.SendAddonMessage with many messages and have found that 
   -- if messages are sent too quickly then they won't be sent, but the player won't be disconnected.

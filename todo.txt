@@ -1,9 +1,13 @@
 Less sensitive disconnect alert (send message before and after loading screens, clear timestamps after loading, send confirmation message for disconnecting client to respond to)
+Self connection status (ignore group connections if self is disconnected)
 Sending messages and seeing notifications for raid members
+Addon outdated notifications
+Options
 Alert other players with the addon if disconnecting, logging out, hearthing, or taunt fails, or using threat altering abilities (divine shield, aoe taunt, fd, vanish), or silenced/stunned.
   AoE Taunt
   CC
   Taunt Fail/Success
+  Defensive Cooldowns
 Low rank combat skill reminders
 Alert when high level mobs are detected, targetted, or targetting player
 Show how many mobs are in combat with you, with your pet, and with other players. Alert when it is many (e.g. especially for accidental pet pulls).

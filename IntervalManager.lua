@@ -61,9 +61,7 @@ function IM:CheckGroupConnectionsInterval()
         TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo and
         GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 13 and
         TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
-      TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected = false
-      TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerDisconnected, guid)
-      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, guid)
+      TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerConnectionCheck, guid)
     end
   end
 

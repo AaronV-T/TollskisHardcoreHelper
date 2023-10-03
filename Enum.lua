@@ -1,7 +1,7 @@
 ThhEnum = {
   AddonMessageType = {
     Heartbeat = 0,
-    PlayerDisconnected = 1,
+    PlayerConnectionCheck = 1,
     EnteredCombat = 11,
     ExitedCombat = 12,
     LoggingOut = 13,
