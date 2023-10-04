@@ -8,7 +8,7 @@ local MM = TollskisHardcoreHelper_MessageManager
 function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
   if (prefix ~= self.AddonMessagePrefix) then return end
   --print("OnChatMessageAddonEvent. " .. tostring(prefix) ..  ", " .. tostring(text) ..  ", " .. tostring(channel) ..  ", " .. tostring(sender) ..  ", " .. tostring(target) ..  ", " .. tostring(zoneChannelID) ..  ", " .. tostring(localID) ..  ", " .. tostring(name) ..  ", " .. tostring(instanceID) ..  ".")
-  --print(string.format("%d - ReceivedMessage: %s, %s", GetTime(), text,  sender))
+  --print(string.format("%d - ReceivedMessage: %s, %s", time(), text,  sender))
   table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - ReceivedMessage: %s, %s", time(), text,  sender))
 
   if (channel ~= "WHISPER" and channel ~= "PARTY" and channel ~= "RAID") then return end
@@ -33,6 +33,14 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     if (not TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsConnected) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerReconnected, senderGuid)
       shouldUpdateRaidFrames = true
+
+      if (senderUnitId == "player") then -- If the player was disconnected, act like all other players in the group had been connected the whole time.
+        for k,v in pairs(TollskisHardcoreHelper_PlayerStates) do
+          if (v.ConnectionInfo) then
+            v.ConnectionInfo.LastMessageTimestamp = GetTime()
+          end
+        end
+      end
     end
 
     TollskisHardcoreHelper_PlayerStates[senderGuid].ConnectionInfo.IsConnected = true
@@ -58,14 +66,7 @@ function MM:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneC
     end
 
     C_Timer.After(1, function()
-      if (TollskisHardcoreHelper_PlayerStates[arg1] and
-          TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo and
-          GetTime() - TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.LastMessageTimestamp > 14 and
-          TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsConnected == true) then
-        TollskisHardcoreHelper_PlayerStates[arg1].ConnectionInfo.IsConnected = false
-        TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
-        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, arg1)
-      end
+      TollskisHardcoreHelper_IntervalManager:CheckPlayerConnectionAndMarkIfDisconnected(arg1)
     end)
   end
 
@@ -92,18 +93,19 @@ function MM:SendMessageToGroup(addonMessageType, arg1)
   self.SentMessageTimestamps[addonMessage] = nowTimestamp
 
   local addonMessageChatType = "WHISPER"
-  if (TollskisHardcoreHelper_Settings.Options.EnableChatMessages and (UnitInParty("player") or UnitInRaid("player"))) then
-    local chatMessage = self:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
-    if (chatMessage) then SendChatMessage("[THH] " .. chatMessage, "PARTY") end
+  if (UnitInParty("player") or UnitInRaid("player")) then
+    if (TollskisHardcoreHelper_Settings.Options.EnableChatMessages) then
+      local chatMessage = self:ConvertAddonMessageToChatMessage(addonMessageType, arg1)
+      if (chatMessage) then SendChatMessage("[THH] " .. chatMessage, "PARTY") end
+    end
+
     addonMessageChatType = "RAID"
   end
-
-  if (not addonMessageChatType) then return end
 
   local target = nil
   if (addonMessageChatType == "WHISPER") then target = UnitName("player") end
 
-  --print(string.format("%d - SendMessage: %s", GetTime(), addonMessage))
+  --print(string.format("%d - SendMessage: %s", time(), addonMessage))
   table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - SendMessage: %s", time(), addonMessage))
 
   -- Note: I tried using ChatThrottleLib but messages were more likely to not be sent. I tested C_ChatInfo.SendAddonMessage with many messages and have found that 

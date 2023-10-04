@@ -1,5 +1,4 @@
-Less sensitive disconnect alert (send message before and after loading screens, clear timestamps after loading, send confirmation message for disconnecting client to respond to)
-Self connection status (ignore group connections if self is disconnected)
+Self combat indicator
 Sending messages and seeing notifications for raid members
 Addon outdated notifications
 Options

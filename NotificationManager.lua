@@ -32,10 +32,16 @@ end
 
 function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.PlayerDisconnected) then
-    return string.format("%s has disconnected.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
+    local prefix
+    if (arg1 == UnitGUID("player")) then prefix = "You have"
+    else prefix = string.format("%s has", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1)) end
+    return string.format("%s disconnected.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.PlayerReconnected) then
-    return string.format("%s has reconnected.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
+    local prefix
+    if (arg1 == UnitGUID("player")) then prefix = "You have"
+    else prefix = string.format("%s has", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1)) end
+    return string.format("%s reconnected.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.PlayerOffline) then
     return string.format("%s has gone offline.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
