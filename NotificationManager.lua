@@ -47,7 +47,10 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
     return string.format("%s has gone offline.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
   end
   if (notificationType == ThhEnum.NotificationType.EnteredCombat) then
-    return string.format("%s entered combat.", playerWhoNotified)
+    local prefix
+    if (playerWhoNotified == UnitName("player")) then prefix = "You"
+    else prefix = string.format("%s", playerWhoNotified) end
+    return string.format("%s entered combat.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.LoggingOut) then
     return string.format("%s is logging out.", playerWhoNotified)

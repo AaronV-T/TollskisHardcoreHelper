@@ -141,6 +141,7 @@ function EM.EventHandlers.PLAYER_REGEN_DISABLED(self)
   --print("PLAYER_REGEN_DISABLED")
 
   MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.EnteredCombat)
+  TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.EnteredCombat)
 end
 
 function EM.EventHandlers.PLAYER_REGEN_ENABLED(self)
