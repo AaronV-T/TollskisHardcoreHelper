@@ -108,9 +108,17 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
   end
 end
 
+local playerWasInParty = false
 function EM.EventHandlers.GROUP_ROSTER_UPDATE(self)
   --print("GROUP_ROSTER_UPDATE.")
   self:UpdateGroupMemberInfo()
+
+  local playerIsInParty = UnitInParty("player")
+  if (playerIsInParty and playerIsInParty ~= playerWasInParty) then
+    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.AddonInfo, GetAddOnMetadata("TollskisHardcoreHelper", "Version"))
+  end
+
+  playerWasInParty = playerIsInParty
 end
 
 function EM.EventHandlers.PLAYER_ENTERING_WORLD(self, isLogin, isReload)

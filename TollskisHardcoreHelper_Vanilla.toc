@@ -1,6 +1,6 @@
 ## Interface: 11404
 ## Title: Tollski's Hardcore Helper
-## Notes: Provides various functionality for Hardcore characters.
+## Notes: Provides functionality to help survive in Hardcore.
 ## Author: Tollski
 ## Version: 0.0.1
 ## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
