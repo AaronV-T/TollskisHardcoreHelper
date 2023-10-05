@@ -7,7 +7,6 @@ local NM = TollskisHardcoreHelper_NotificationManager
 function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
   local notification = self:GetNotification(playerWhoNotified, notificationType, arg1)
   if (not notification) then
-    print("[THH] No notification for notification type " .. tostring(notificationType))
     return
   end
 
@@ -49,40 +48,77 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.EnteredCombat) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then prefix = "You"
-    else prefix = string.format("%s", playerWhoNotified) end
+    else
+      if (UnitInRaid("player")) then
+        return nil
+      end
+
+      prefix = string.format("%s", playerWhoNotified) end
     return string.format("%s entered combat.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.LoggingOut) then
+    if (UnitInRaid("player")) then
+      return nil
+    end
+
     return string.format("%s is logging out.", playerWhoNotified)
   end
   if (notificationType == ThhEnum.NotificationType.LogoutCancelled) then
+    if (UnitInRaid("player")) then
+      return nil
+    end
+
     return string.format("%s has stopped logging out.", playerWhoNotified)
   end
   if (notificationType == ThhEnum.NotificationType.HealthLow) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then prefix = "Your"
-    else prefix = string.format("%s's", playerWhoNotified) end
+    else
+      if (UnitInRaid("player")) then
+        return nil
+      end
+
+      prefix = string.format("%s's", playerWhoNotified) end
     return string.format("%s health is low.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.HealthCriticallyLow) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then prefix = "Your"
-    else prefix = string.format("%s's", playerWhoNotified) end
+    else
+      if (UnitInRaid("player")) then
+        return nil
+      end
+
+      prefix = string.format("%s's", playerWhoNotified) end
     return string.format("%s health is critically low.", prefix)
   end
   if (notificationType == ThhEnum.NotificationType.SpellCastStarted) then
+    if (UnitInRaid("player")) then
+      return nil
+    end
+
     return string.format("%s is casting %s.", playerWhoNotified, arg1)
   end
   if (notificationType == ThhEnum.NotificationType.SpellCastInterrupted) then
+    if (UnitInRaid("player")) then
+      return nil
+    end
+
     return string.format("%s's %s cast has been stopped.", playerWhoNotified, arg1)
   end
   if (notificationType == ThhEnum.NotificationType.AuraApplied) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then prefix = "You are"
-    else prefix = string.format("%s is", playerWhoNotified) end
+    else
+      if (UnitInRaid("player")) then
+        return nil
+      end
+
+      prefix = string.format("%s is", playerWhoNotified) end
     return string.format("%s affected by %s.", prefix, arg1)
   end
 
+  print("[THH] No notification for notification type " .. tostring(notificationType))
   return nil
 end
 
