@@ -56,11 +56,86 @@ function TollskisHardcoreHelper_OptionWindow:Initialize()
   self.fsEnableLowHealthAlertSounds:SetText("Enable alert sounds when your health is low.")
   yPos = yPos - 30
 
-  self.cbEnableLowHealthAlertTextNotifications = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
-  self.cbEnableLowHealthAlertTextNotifications:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
-  self.fsEnableLowHealthAlertTextNotifications = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-  self.fsEnableLowHealthAlertTextNotifications:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
-  self.fsEnableLowHealthAlertTextNotifications:SetText("Enable onscreen text notifications when you or a party member has low health.")
+  self.fsLowHealthAlertNote = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsLowHealthAlertNote:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsLowHealthAlertNote:SetText("Note: Chat messages and notification settings can be set in their respective sections.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotifications = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotifications:SetPoint("LEFT", self, "TOPLEFT", 10, yPos)
+  self.fsEnableTextNotifications = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotifications:SetPoint("LEFT", self, "TOPLEFT", 40, yPos)
+  self.fsEnableTextNotifications:SetText("Enable Onscreen Text Notifications")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsCombatSelf = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsCombatSelf:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsCombatSelf = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsCombatSelf:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsCombatSelf:SetText("Enable notifications when you enter combat.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsCombatGroup = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsCombatGroup:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsCombatGroup = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsCombatGroup:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsCombatGroup:SetText("Enable notifications when a party member enters combat.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsConnectionSelf = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsConnectionSelf:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsConnectionSelf = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsConnectionSelf:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsConnectionSelf:SetText("Enable notifications when you disconnect.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsConnectionGroup = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsConnectionGroup:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsConnectionGroup = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsConnectionGroup:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsConnectionGroup:SetText("Enable notifications when a party member disconnects or goes offline.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsLogout = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsLogout:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsLogout = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsLogout:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsLogout:SetText("Enable notifications when a party member is logging out.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsLowHealthSelf = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsLowHealthSelf:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsLowHealthSelf = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsLowHealthSelf:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsLowHealthSelf:SetText("Enable notifications when you have low health. (Requires low health alerts to be enabled.)")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsLowHealthGroup = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsLowHealthGroup:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsLowHealthGroup = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsLowHealthGroup:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsLowHealthGroup:SetText("Enable notifications when a party member has low health. (Requires low health alerts to be enabled.)")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsSpellcasts = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsSpellcasts:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsSpellcasts = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsSpellcasts:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsSpellcasts:SetText("Enable notifications when a party member casts certain spells (e.g. Hearthstone).")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsAurasSelf = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsAurasSelf:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsAurasSelf = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsAurasSelf:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsAurasSelf:SetText("Enable notifications when you are affected by certain threat-altering effects.")
+  yPos = yPos - 30
+
+  self.cbEnableTextNotificationsAurasGroup = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
+  self.cbEnableTextNotificationsAurasGroup:SetPoint("LEFT", self, "TOPLEFT", 30, yPos)
+  self.fsEnableTextNotificationsAurasGroup = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.fsEnableTextNotificationsAurasGroup:SetPoint("LEFT", self, "TOPLEFT", 60, yPos)
+  self.fsEnableTextNotificationsAurasGroup:SetText("Enable notifications when nearby players are affected by certain threat-altering effects.")
   yPos = yPos - 30
 
   self.cbShowIconsOnRaidFrames = CreateFrame("CheckButton", nil, self, "UICheckButtonTemplate") 
@@ -81,7 +156,17 @@ function TollskisHardcoreHelper_OptionWindow:LoadOptions()
   self.cbEnableLowHealthAlerts:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts)
   self.cbEnableLowHealthAlertScreenFlashing:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing)
   self.cbEnableLowHealthAlertSounds:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds)
-  self.cbEnableLowHealthAlertTextNotifications:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications)
+  self.cbEnableTextNotifications:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotifications)
+  self.cbEnableTextNotificationsCombatSelf:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatSelf)
+  self.cbEnableTextNotificationsCombatGroup:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatGroup)
+  self.cbEnableTextNotificationsConnectionSelf:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionSelf)
+  self.cbEnableTextNotificationsConnectionGroup:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup)
+  self.cbEnableTextNotificationsLogout:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLogout)
+  self.cbEnableTextNotificationsLowHealthSelf:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthSelf)
+  self.cbEnableTextNotificationsLowHealthGroup:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthGroup)
+  self.cbEnableTextNotificationsSpellcasts:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsSpellcasts)
+  self.cbEnableTextNotificationsAurasSelf:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasSelf)
+  self.cbEnableTextNotificationsAurasGroup:SetChecked(TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasGroup)
   self.cbShowIconsOnRaidFrames:SetChecked(TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames)
 end
 
@@ -93,7 +178,17 @@ function TollskisHardcoreHelper_OptionWindow:SaveOptions()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts = self.cbEnableLowHealthAlerts:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing = self.cbEnableLowHealthAlertScreenFlashing:GetChecked()
   TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds = self.cbEnableLowHealthAlertSounds:GetChecked()
-  TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications = self.cbEnableLowHealthAlertTextNotifications:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotifications = self.cbEnableTextNotifications:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatSelf = self.cbEnableTextNotificationsCombatSelf:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatGroup = self.cbEnableTextNotificationsCombatGroup:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionSelf = self.cbEnableTextNotificationsConnectionSelf:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup = self.cbEnableTextNotificationsConnectionGroup:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLogout = self.cbEnableTextNotificationsLogout:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthSelf = self.cbEnableTextNotificationsLowHealthSelf:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthGroup = self.cbEnableTextNotificationsLowHealthGroup:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsSpellcasts = self.cbEnableTextNotificationsSpellcasts:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasSelf = self.cbEnableTextNotificationsAurasSelf:GetChecked()
+  TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasGroup = self.cbEnableTextNotificationsAurasGroup:GetChecked()
 
   local shouldUpdateRaidFrames = TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames ~= self.cbShowIconsOnRaidFrames:GetChecked()
   TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames = self.cbShowIconsOnRaidFrames:GetChecked()

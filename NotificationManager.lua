@@ -5,6 +5,8 @@ TollskisHardcoreHelper_NotificationManager = {
 local NM = TollskisHardcoreHelper_NotificationManager
 
 function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
+  if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotifications) then return end
+
   local notification = self:GetNotification(playerWhoNotified, notificationType, arg1)
   if (not notification) then
     return
@@ -32,85 +34,147 @@ end
 function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.PlayerDisconnected) then
     local prefix
-    if (arg1 == UnitGUID("player")) then prefix = "You have"
-    else prefix = string.format("%s has", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1)) end
+    if (arg1 == UnitGUID("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionSelf) then
+        return nil
+      end
+
+      prefix = "You have"
+    else
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup) then
+        return nil
+      end
+
+      prefix = string.format("%s has", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
+    end
+
     return string.format("%s disconnected.", prefix)
   end
+
   if (notificationType == ThhEnum.NotificationType.PlayerReconnected) then
     local prefix
-    if (arg1 == UnitGUID("player")) then prefix = "You have"
-    else prefix = string.format("%s has", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1)) end
+    if (arg1 == UnitGUID("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionSelf) then
+        return nil
+      end
+
+      prefix = "You have"
+    else
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup) then
+        return nil
+      end
+
+      prefix = string.format("%s has", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
+    end
+
     return string.format("%s reconnected.", prefix)
   end
+
   if (notificationType == ThhEnum.NotificationType.PlayerOffline) then
+    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup) then
+      return nil
+    end
+
     return string.format("%s has gone offline.", UnitHelperFunctions.FindUnitNameByUnitGuid(arg1))
   end
+
   if (notificationType == ThhEnum.NotificationType.EnteredCombat) then
     local prefix
-    if (playerWhoNotified == UnitName("player")) then prefix = "You"
+    if (playerWhoNotified == UnitName("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatSelf) then
+        return nil
+      end
+
+      prefix = "You"
     else
-      if (UnitInRaid("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatGroup or UnitInRaid("player")) then
         return nil
       end
 
       prefix = string.format("%s", playerWhoNotified) end
     return string.format("%s entered combat.", prefix)
   end
+
   if (notificationType == ThhEnum.NotificationType.LoggingOut) then
-    if (UnitInRaid("player")) then
+    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLogout or UnitInRaid("player")) then
       return nil
     end
 
     return string.format("%s is logging out.", playerWhoNotified)
   end
+
   if (notificationType == ThhEnum.NotificationType.LogoutCancelled) then
-    if (UnitInRaid("player")) then
+    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLogout or UnitInRaid("player")) then
       return nil
     end
 
     return string.format("%s has stopped logging out.", playerWhoNotified)
   end
+
   if (notificationType == ThhEnum.NotificationType.HealthLow) then
     local prefix
-    if (playerWhoNotified == UnitName("player")) then prefix = "Your"
-    else
-      if (UnitInRaid("player")) then
+    if (playerWhoNotified == UnitName("player")) then 
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthSelf) then
         return nil
       end
 
-      prefix = string.format("%s's", playerWhoNotified) end
+      prefix = "Your"
+    else
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthGroup or UnitInRaid("player")) then
+        return nil
+      end
+
+      prefix = string.format("%s's", playerWhoNotified)
+    end
+
     return string.format("%s health is low.", prefix)
   end
+
   if (notificationType == ThhEnum.NotificationType.HealthCriticallyLow) then
     local prefix
-    if (playerWhoNotified == UnitName("player")) then prefix = "Your"
-    else
-      if (UnitInRaid("player")) then
+    if (playerWhoNotified == UnitName("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthSelf) then
         return nil
       end
 
-      prefix = string.format("%s's", playerWhoNotified) end
+      prefix = "Your"
+    else
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthGroup or UnitInRaid("player")) then
+        return nil
+      end
+
+      prefix = string.format("%s's", playerWhoNotified)
+    end
+
     return string.format("%s health is critically low.", prefix)
   end
+
   if (notificationType == ThhEnum.NotificationType.SpellCastStarted) then
-    if (UnitInRaid("player")) then
+    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsSpellcasts or UnitInRaid("player")) then
       return nil
     end
 
     return string.format("%s is casting %s.", playerWhoNotified, arg1)
   end
+
   if (notificationType == ThhEnum.NotificationType.SpellCastInterrupted) then
-    if (UnitInRaid("player")) then
+    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsSpellcasts or UnitInRaid("player")) then
       return nil
     end
 
     return string.format("%s's %s cast has been stopped.", playerWhoNotified, arg1)
   end
+  
   if (notificationType == ThhEnum.NotificationType.AuraApplied) then
     local prefix
-    if (playerWhoNotified == UnitName("player")) then prefix = "You are"
+    if (playerWhoNotified == UnitName("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasSelf) then
+        return nil
+      end
+
+      prefix = "You are"
     else
-      if (UnitInRaid("player")) then
+      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasGroup or UnitInRaid("player")) then
         return nil
       end
 

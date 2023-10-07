@@ -45,7 +45,17 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
         EnableLowHealthAlerts = true,
         EnableLowHealthAlertScreenFlashing = true,
         EnableLowHealthAlertSounds = true,
-        EnableLowHealthAlertTextNotifications = true,
+        EnableTextNotifications = true,
+        EnableTextNotificationsAurasSelf = true,
+        EnableTextNotificationsAurasGroup = true,
+        EnableTextNotificationsCombatSelf = true,
+        EnableTextNotificationsCombatGroup = true,
+        EnableTextNotificationsConnectionSelf = true,
+        EnableTextNotificationsConnectionGroup = true,
+        EnableTextNotificationsLogout = true,
+        EnableTextNotificationsLowHealthSelf = true,
+        EnableTextNotificationsLowHealthGroup = true,
+        EnableTextNotificationsSpellcasts = true,
         ShowIconsOnRaidFrames = true,
       },
     }
@@ -60,17 +70,17 @@ function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, ta
   MessageManager:OnChatMessageAddonEvent(prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
 end
 
-local AurasToNotify = { -- Key is aura name, value is if we should notify the player if they themselves are affected (if false, only notify when other players are affected by the aura)
+local AurasToNotify = {
   ["Blessing of Protection"] = true,
   ["Divine Intervention"] = true,
-  ["Divine Protection"] = false,
-  ["Divine Shield"] = false,
-  ["Feign Death"] = false, -- unconfirmed
-  ["Ice Block"] = false, -- unconfirmed
-  ["Invulnerability"] = false, -- unconfirmed Limited Invulnerability Potion
-  ["Light of Elune"] = false, -- unconfirmed
-  ["Petrification"] = false, --unconfirmed Flask of Petrification
-  ["Vanish"] = false, -- unconfirmed
+  ["Divine Protection"] = true,
+  ["Divine Shield"] = true,
+  ["Feign Death"] = true, -- unconfirmed
+  ["Ice Block"] = true, -- unconfirmed
+  ["Invulnerability"] = true, -- unconfirmed Limited Invulnerability Potion
+  ["Light of Elune"] = true, -- unconfirmed
+  ["Petrification"] = true, --unconfirmed Flask of Petrification
+  ["Vanish"] = true, -- unconfirmed
 }
 
 local SpellsToNotifyOnCastStart = {
@@ -83,7 +93,7 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
 
   if (event == "SPELL_AURA_APPLIED") then
     local amount, auraType = select(12, CombatLogGetCurrentEventInfo())
-    if (AurasToNotify[auraType] == true or (AurasToNotify[auraType] == false and destGuid ~= UnitGUID("player"))) then
+    if (AurasToNotify[auraType]) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(destName, ThhEnum.NotificationType.AuraApplied, auraType)
     end
   elseif (event == "SPELL_CAST_FAILED") then
