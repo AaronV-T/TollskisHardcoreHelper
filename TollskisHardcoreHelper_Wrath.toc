@@ -1,4 +1,4 @@
-## Interface: 11404
+## Interface: 30402
 ## Title: Tollski's Hardcore Helper
 ## Notes: Provides functionality to help survive in Hardcore.
 ## Author: Tollski

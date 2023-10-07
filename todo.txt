@@ -3,6 +3,7 @@ Alert other players with the addon if disconnecting, logging out, hearthing, or 
   CC
   Taunt Fail/Success
   Defensive Cooldowns
+  AFK
 Low rank combat skill reminders
 Alert when high level mobs are detected, targetted, or targetting player
 Show how many mobs are in combat with you, with your pet, and with other players. Alert when it is many (e.g. especially for accidental pet pulls).
