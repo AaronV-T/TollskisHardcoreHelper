@@ -185,6 +185,8 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
 
   local health = UnitHealth(unitId)
   local maxHealth = UnitHealthMax(unitId)
+  
+  if (maxHealth == 0) then return end
 
   local healthPercentage = health / maxHealth
 
@@ -202,7 +204,7 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   local oldHealthStatus = healthStatus[unitId]
   if (newHealthStatus == oldHealthStatus) then return end
 
-  if (newHealthStatus == 1 and healthPercentage > 0.00001) then
+  if (newHealthStatus == 1 and health > 0) then
     if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications) then
       TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
     end
