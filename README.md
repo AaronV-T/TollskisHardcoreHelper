@@ -3,6 +3,8 @@ This is a World of Warcaraft Classic addon to help players stay alive.
 
 ## Features
 
+Options to alert the player when their health is low by flashing the screen and playing a sound.
+
 Options to notify the player when:  
   * The player or a group member disconnects*.
   * The player or a nearby player is affected by certain threat-altering effects.
