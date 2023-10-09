@@ -1,6 +1,6 @@
-TollskisHardcoreHelper_IntervalManager = {}
+Safeguard_IntervalManager = {}
 
-local IM = TollskisHardcoreHelper_IntervalManager
+local IM = Safeguard_IntervalManager
 
 local groupUnitIds = { "player" }
 for i = 1, 40 do
@@ -16,28 +16,28 @@ function IM:CheckCombatInterval()
     local guid = UnitGUID(groupUnitIds[i])
     if (guid and
         UnitIsConnected(groupUnitIds[i]) and
-        (not TollskisHardcoreHelper_PlayerStates[guid] or
-        not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo or
-        not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected)) then
+        (not Safeguard_PlayerStates[guid] or
+        not Safeguard_PlayerStates[guid].ConnectionInfo or
+        not Safeguard_PlayerStates[guid].ConnectionInfo.IsConnected)) then
       local isInCombat = UnitAffectingCombat(groupUnitIds[i])
-      if (not TollskisHardcoreHelper_PlayerStates[guid]) then
-        TollskisHardcoreHelper_PlayerStates[guid] = PlayerState.New(nil, isInCombat)
+      if (not Safeguard_PlayerStates[guid]) then
+        Safeguard_PlayerStates[guid] = PlayerState.New(nil, isInCombat)
       else
-        if (isInCombat ~= TollskisHardcoreHelper_PlayerStates[guid].IsInCombat) then
+        if (isInCombat ~= Safeguard_PlayerStates[guid].IsInCombat) then
           shouldUpdateRaidFrames = true
 
           if (isInCombat) then
-            TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(groupUnitIds[i]), ThhEnum.NotificationType.EnteredCombat)
+            Safeguard_NotificationManager:ShowNotificationToPlayer(UnitName(groupUnitIds[i]), ThhEnum.NotificationType.EnteredCombat)
           end
         end
 
-        TollskisHardcoreHelper_PlayerStates[guid].IsInCombat = isInCombat
+        Safeguard_PlayerStates[guid].IsInCombat = isInCombat
       end
     end
 	end
 
   if (shouldUpdateRaidFrames) then
-    TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
+    Safeguard_RaidFramesManager:UpdateRaidFrames()
   end
   
   C_Timer.After(5, function()
@@ -47,30 +47,30 @@ end
 
 function IM:CheckGroupConnectionsInterval()
   local playerGuid = UnitGUID("player")
-  if (TollskisHardcoreHelper_PlayerStates[playerGuid] and
-      TollskisHardcoreHelper_PlayerStates[playerGuid].ConnectionInfo and
-      TollskisHardcoreHelper_PlayerStates[playerGuid].ConnectionInfo.IsConnected == true) then
+  if (Safeguard_PlayerStates[playerGuid] and
+      Safeguard_PlayerStates[playerGuid].ConnectionInfo and
+      Safeguard_PlayerStates[playerGuid].ConnectionInfo.IsConnected == true) then
 
     for i = 1, #groupUnitIds do
       local guid = UnitGUID(groupUnitIds[i])
       if (guid and
           not UnitIsConnected(groupUnitIds[i]) and
-          TollskisHardcoreHelper_PlayerStates[guid]) then
-        TollskisHardcoreHelper_PlayerStates[guid] = nil
-        TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
-        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerOffline, guid)
+          Safeguard_PlayerStates[guid]) then
+        Safeguard_PlayerStates[guid] = nil
+        Safeguard_RaidFramesManager:UpdateRaidFrames()
+        Safeguard_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerOffline, guid)
       end
 
       if (guid and
-          TollskisHardcoreHelper_PlayerStates[guid] and
-          TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo and
-          GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 13 and
-          TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
-        TollskisHardcoreHelper_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerConnectionCheck, guid)
+          Safeguard_PlayerStates[guid] and
+          Safeguard_PlayerStates[guid].ConnectionInfo and
+          GetTime() - Safeguard_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 13 and
+          Safeguard_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
+        Safeguard_MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.PlayerConnectionCheck, guid)
 
         if (guid == playerGuid) then
           C_Timer.After(1, function()
-            TollskisHardcoreHelper_IntervalManager:CheckPlayerConnectionAndMarkIfDisconnected(guid)
+            Safeguard_IntervalManager:CheckPlayerConnectionAndMarkIfDisconnected(guid)
           end)
         end
       end
@@ -83,13 +83,13 @@ function IM:CheckGroupConnectionsInterval()
 end
 
 function IM:CheckPlayerConnectionAndMarkIfDisconnected(guid)
-  if (TollskisHardcoreHelper_PlayerStates[guid] and
-      TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo and
-      GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 14 and
-      TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
-    TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected = false
-    TollskisHardcoreHelper_RaidFramesManager:UpdateRaidFrames()
-    TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, guid)
+  if (Safeguard_PlayerStates[guid] and
+      Safeguard_PlayerStates[guid].ConnectionInfo and
+      GetTime() - Safeguard_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp > 14 and
+      Safeguard_PlayerStates[guid].ConnectionInfo.IsConnected == true) then
+    Safeguard_PlayerStates[guid].ConnectionInfo.IsConnected = false
+    Safeguard_RaidFramesManager:UpdateRaidFrames()
+    Safeguard_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.PlayerDisconnected, guid)
   end
 end
 
@@ -97,13 +97,13 @@ function IM:SendHeartbeatInterval()
   local guid = UnitGUID("player")
 
   local timeSinceLastSentMessage = nil
-  if (TollskisHardcoreHelper_PlayerStates[guid] and TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo) then
-    timeSinceLastSentMessage = GetTime() - TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp
+  if (Safeguard_PlayerStates[guid] and Safeguard_PlayerStates[guid].ConnectionInfo) then
+    timeSinceLastSentMessage = GetTime() - Safeguard_PlayerStates[guid].ConnectionInfo.LastMessageTimestamp
   end
 
   local delay = 10
   if (timeSinceLastSentMessage == nil or timeSinceLastSentMessage >= (10 - 0.01)) then
-    TollskisHardcoreHelper_MessageManager:SendHeartbeatMessage()
+    Safeguard_MessageManager:SendHeartbeatMessage()
   else
     delay = 10 - timeSinceLastSentMessage
   end

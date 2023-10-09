@@ -1,4 +1,4 @@
-TollskisHardcoreHelper_PlayerStates = {} --<guid, PlayerState>
+Safeguard_PlayerStates = {} --<guid, PlayerState>
 
 PlayerState = {}
 function PlayerState.New(connectionInfo, isInCombat)

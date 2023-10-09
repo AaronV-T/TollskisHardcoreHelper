@@ -1,6 +1,6 @@
-TollskisHardcoreHelper_FlashFrame = CreateFrame("Frame", nil, UIParent) -- ,"SecureHandlerStateTemplate")
+Safeguard_FlashFrame = CreateFrame("Frame", nil, UIParent) -- ,"SecureHandlerStateTemplate")
 
-local flashFrame = TollskisHardcoreHelper_FlashFrame
+local flashFrame = Safeguard_FlashFrame
 
 flashFrame:Hide()
 flashFrame:SetAllPoints()
@@ -18,7 +18,7 @@ flashFrame.Texture:SetTexture("Interface\\FullScreenTextures\\LowHealth")
 --flashFrame.Texture:SetDesaturated(true)
 
 flashFrame:SetScript('OnUpdate', function(self)
-  if (not TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts or not TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
+  if (not Safeguard_Settings.Options.EnableLowHealthAlerts or not Safeguard_Settings.Options.EnableLowHealthAlertScreenFlashing) then
     self:StopAnimation()
     return
   end

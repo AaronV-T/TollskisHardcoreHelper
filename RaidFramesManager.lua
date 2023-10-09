@@ -1,9 +1,9 @@
-TollskisHardcoreHelper_RaidFramesManager = {
+Safeguard_RaidFramesManager = {
   ARaidFrameUpdateIsQueued = nil,
   LastRaidFramesUpdateTimestamp = nil,
 }
 
-local RFM = TollskisHardcoreHelper_RaidFramesManager
+local RFM = Safeguard_RaidFramesManager
 
 function RFM:UpdateRaidFrames()
   if (not CompactRaidFrameContainer:IsShown()) then return end
@@ -38,7 +38,7 @@ function RFM:UpdateRaidFrame(frame)
 
   if (not frame.ThhIconsContainerFrame) then RFM:SetupRaidFrameIcons(frame) end
 
-  if (not TollskisHardcoreHelper_PlayerStates[guid] or not TollskisHardcoreHelper_Settings.Options.ShowIconsOnRaidFrames) then
+  if (not Safeguard_PlayerStates[guid] or not Safeguard_Settings.Options.ShowIconsOnRaidFrames) then
     if (frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Hide() end
     if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
     if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end
@@ -48,11 +48,11 @@ function RFM:UpdateRaidFrame(frame)
 
   if (not frame.ThhIconsContainerFrame:IsShown()) then frame.ThhIconsContainerFrame:Show() end
 
-  if (not TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo) then
+  if (not Safeguard_PlayerStates[guid].ConnectionInfo) then
     if (frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Hide() end
     if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
   else
-    if (TollskisHardcoreHelper_PlayerStates[guid].ConnectionInfo.IsConnected) then
+    if (Safeguard_PlayerStates[guid].ConnectionInfo.IsConnected) then
       if (not frame.ThhIconsContainerFrame.ConnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.ConnectedIcon:Show() end
       if (frame.ThhIconsContainerFrame.DisconnectedIcon:IsShown()) then frame.ThhIconsContainerFrame.DisconnectedIcon:Hide() end
     else
@@ -61,7 +61,7 @@ function RFM:UpdateRaidFrame(frame)
     end
   end
 
-  if (TollskisHardcoreHelper_PlayerStates[guid].IsInCombat) then
+  if (Safeguard_PlayerStates[guid].IsInCombat) then
     if (not frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Show() end
   else
     if (frame.ThhIconsContainerFrame.InCombatIcon:IsShown()) then frame.ThhIconsContainerFrame.InCombatIcon:Hide() end

@@ -1,4 +1,4 @@
-# Tollski's Hardcore Helper
+# Safeguard
 This is a World of Warcaraft Classic addon to help players stay alive.
 
 ## Features
@@ -14,7 +14,7 @@ Options to notify the player when:
   * A group member is logging out*.
   * A group member goes offline.
   
-\* Requires group member to have Tollski's HardCore Helper installed
+\* Requires group member to have Safeguard installed
 
 Options to automatically send chat messages to the player's group when:
   * The player's has critically low health.

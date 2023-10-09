@@ -1,11 +1,11 @@
-TollskisHardcoreHelper_NotificationManager = {
+Safeguard_NotificationManager = {
   ShownNotificationTimestamps = {},
 }
 
-local NM = TollskisHardcoreHelper_NotificationManager
+local NM = Safeguard_NotificationManager
 
 function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
-  if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotifications) then return end
+  if (not Safeguard_Settings.Options.EnableTextNotifications) then return end
 
   local notification = self:GetNotification(playerWhoNotified, notificationType, arg1)
   if (not notification) then
@@ -28,20 +28,20 @@ function NM:ShowNotificationToPlayer(playerWhoNotified, notificationType, arg1)
   local b = 1.000
   UIErrorsFrame:AddMessage(notification, r, g, b)
   --print("[THH] " .. notification)
-  table.insert(TollskisHardcoreHelper_EventManager.DebugLogs, string.format("%d - Notification: %s", time(), notification))
+  table.insert(Safeguard_EventManager.DebugLogs, string.format("%d - Notification: %s", time(), notification))
 end
 
 function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.PlayerDisconnected) then
     local prefix
     if (arg1 == UnitGUID("player")) then
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionSelf) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsConnectionSelf) then
         return nil
       end
 
       prefix = "You have"
     else
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsConnectionGroup) then
         return nil
       end
 
@@ -54,13 +54,13 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.PlayerReconnected) then
     local prefix
     if (arg1 == UnitGUID("player")) then
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionSelf) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsConnectionSelf) then
         return nil
       end
 
       prefix = "You have"
     else
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsConnectionGroup) then
         return nil
       end
 
@@ -71,7 +71,7 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   end
 
   if (notificationType == ThhEnum.NotificationType.PlayerOffline) then
-    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsConnectionGroup) then
+    if (not Safeguard_Settings.Options.EnableTextNotificationsConnectionGroup) then
       return nil
     end
 
@@ -81,13 +81,13 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.EnteredCombat) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatSelf) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsCombatSelf) then
         return nil
       end
 
       prefix = "You"
     else
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsCombatGroup or UnitInRaid("player")) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsCombatGroup or UnitInRaid("player")) then
         return nil
       end
 
@@ -96,7 +96,7 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   end
 
   if (notificationType == ThhEnum.NotificationType.LoggingOut) then
-    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLogout or UnitInRaid("player")) then
+    if (not Safeguard_Settings.Options.EnableTextNotificationsLogout or UnitInRaid("player")) then
       return nil
     end
 
@@ -104,7 +104,7 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   end
 
   if (notificationType == ThhEnum.NotificationType.LogoutCancelled) then
-    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLogout or UnitInRaid("player")) then
+    if (not Safeguard_Settings.Options.EnableTextNotificationsLogout or UnitInRaid("player")) then
       return nil
     end
 
@@ -114,13 +114,13 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.HealthLow) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then 
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthSelf) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsLowHealthSelf) then
         return nil
       end
 
       prefix = "Your"
     else
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthGroup or UnitInRaid("player")) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsLowHealthGroup or UnitInRaid("player")) then
         return nil
       end
 
@@ -133,13 +133,13 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.HealthCriticallyLow) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthSelf) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsLowHealthSelf) then
         return nil
       end
 
       prefix = "Your"
     else
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsLowHealthGroup or UnitInRaid("player")) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsLowHealthGroup or UnitInRaid("player")) then
         return nil
       end
 
@@ -150,7 +150,7 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   end
 
   if (notificationType == ThhEnum.NotificationType.SpellCastStarted) then
-    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsSpellcasts or UnitInRaid("player")) then
+    if (not Safeguard_Settings.Options.EnableTextNotificationsSpellcasts or UnitInRaid("player")) then
       return nil
     end
 
@@ -158,7 +158,7 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   end
 
   if (notificationType == ThhEnum.NotificationType.SpellCastInterrupted) then
-    if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsSpellcasts or UnitInRaid("player")) then
+    if (not Safeguard_Settings.Options.EnableTextNotificationsSpellcasts or UnitInRaid("player")) then
       return nil
     end
 
@@ -168,13 +168,13 @@ function NM:GetNotification(playerWhoNotified, notificationType, arg1)
   if (notificationType == ThhEnum.NotificationType.AuraApplied) then
     local prefix
     if (playerWhoNotified == UnitName("player")) then
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasSelf) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsAurasSelf) then
         return nil
       end
 
       prefix = "You are"
     else
-      if (not TollskisHardcoreHelper_Settings.Options.EnableTextNotificationsAurasGroup or UnitInRaid("player")) then
+      if (not Safeguard_Settings.Options.EnableTextNotificationsAurasGroup or UnitInRaid("player")) then
         return nil
       end
 

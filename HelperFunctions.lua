@@ -1,6 +1,6 @@
-TollskisHardcoreHelper_HelperFunctions = {}
+Safeguard_HelperFunctions = {}
 
-local HF = TollskisHardcoreHelper_HelperFunctions
+local HF = Safeguard_HelperFunctions
 
 function HF.BoolToNumber(bool)
   return bool and 1 or 0

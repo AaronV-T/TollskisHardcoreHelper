@@ -1,24 +1,24 @@
-TollskisHardcoreHelper_Settings = nil
+Safeguard_Settings = nil
 
-TollskisHardcoreHelper_EventManager = {
+Safeguard_EventManager = {
   DebugLogs = {},
   EventHandlers = {},
 }
 
-local EM = TollskisHardcoreHelper_EventManager
+local EM = Safeguard_EventManager
 
-local IntervalManager = TollskisHardcoreHelper_IntervalManager
-local MessageManager = TollskisHardcoreHelper_MessageManager
+local IntervalManager = Safeguard_IntervalManager
+local MessageManager = Safeguard_MessageManager
 
 -- Slash Commands
 
-SLASH_TOLLSKISHARDCOREHELPER1, SLASH_TOLLSKISHARDCOREHELPER2 = "/tollskishardcorehelper", "/thh"
-function SlashCmdList.TOLLSKISHARDCOREHELPER()
+SLASH_SAFEGUARD1, SLASH_SAFEGUARD2 = "/safeguard", "/sg"
+function SlashCmdList.SAFEGUARD()
   EM:Test()
 end
 
-SLASH_TOLLSKISHARDCOREHELPERDEBUG1, SLASH_TOLLSKISHARDCOREHELPERDEBUG2 = "/tollskishardcorehelperdebug", "/thhdebug"
-function SlashCmdList.TOLLSKISHARDCOREHELPERDEBUG()
+SLASH_SAFEGUARDDEBUG1, SLASH_SAFEGUARDDEBUG2 = "/sasfeguarddebug", "/sgdebug"
+function SlashCmdList.SAFEGUARDDEBUG()
   EM:Debug()
 end
 
@@ -33,10 +33,10 @@ function EM:OnEvent(_, event, ...)
 end
 
 function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
-  if (addonName ~= "TollskisHardcoreHelper") then return end
+  if (addonName ~= "Safeguard") then return end
 
-  if (type(_G["TOLLSKISHARDCOREHELPER_SETTINGS"]) ~= "table") then
-		_G["TOLLSKISHARDCOREHELPER_SETTINGS"] = {
+  if (type(_G["SAFEGUARD_SETTINGS"]) ~= "table") then
+		_G["SAFEGUARD_SETTINGS"] = {
       Options = {
         EnableChatMessages = true,
         EnableChatMessagesLogout = true,
@@ -61,9 +61,9 @@ function EM.EventHandlers.ADDON_LOADED(self, addonName, ...)
     }
 	end
   
-  TollskisHardcoreHelper_Settings = _G["TOLLSKISHARDCOREHELPER_SETTINGS"]
+  Safeguard_Settings = _G["SAFEGUARD_SETTINGS"]
 
-  TollskisHardcoreHelper_OptionWindow:Initialize()
+  Safeguard_OptionWindow:Initialize()
 end
 
 function EM.EventHandlers.CHAT_MSG_ADDON(self, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
@@ -94,7 +94,7 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
   if (event == "SPELL_AURA_APPLIED") then
     local amount, auraType = select(12, CombatLogGetCurrentEventInfo())
     if (AurasToNotify[auraType]) then
-      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(destName, ThhEnum.NotificationType.AuraApplied, auraType)
+      Safeguard_NotificationManager:ShowNotificationToPlayer(destName, ThhEnum.NotificationType.AuraApplied, auraType)
     end
   elseif (event == "SPELL_CAST_FAILED") then
     -- Note: SPELL_CAST_FAILED events are not triggered for other players' failed spell casts.
@@ -112,7 +112,7 @@ function EM.EventHandlers.COMBAT_LOG_EVENT_UNFILTERED(self)
       end
       
       if (sourceGuid ~= UnitGUID("player") and UnitHelperFunctions.IsUnitGuidInOurPartyOrRaid(sourceGuid)) then
-        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.SpellCastStarted, spellName)
+        Safeguard_NotificationManager:ShowNotificationToPlayer(sourceName, ThhEnum.NotificationType.SpellCastStarted, spellName)
       end
     end
   end
@@ -125,7 +125,7 @@ function EM.EventHandlers.GROUP_ROSTER_UPDATE(self)
 
   local playerIsInParty = UnitInParty("player")
   if (playerIsInParty and playerIsInParty ~= playerWasInParty) then
-    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.AddonInfo, GetAddOnMetadata("TollskisHardcoreHelper", "Version"))
+    MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.AddonInfo, GetAddOnMetadata("Safeguard", "Version"))
   end
 
   playerWasInParty = playerIsInParty
@@ -143,7 +143,7 @@ function EM.EventHandlers.PLAYER_ENTERING_WORLD(self, isLogin, isReload)
     IntervalManager:CheckGroupConnectionsInterval()
     IntervalManager:SendHeartbeatInterval()
   else
-    TollskisHardcoreHelper_PlayerStates = {}
+    Safeguard_PlayerStates = {}
     MessageManager:SendHeartbeatMessage()
   end
 end
@@ -159,7 +159,7 @@ function EM.EventHandlers.PLAYER_REGEN_DISABLED(self)
   --print("PLAYER_REGEN_DISABLED")
 
   MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.EnteredCombat)
-  TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.EnteredCombat)
+  Safeguard_NotificationManager:ShowNotificationToPlayer(UnitName("player"), ThhEnum.NotificationType.EnteredCombat)
 end
 
 function EM.EventHandlers.PLAYER_REGEN_ENABLED(self)
@@ -177,7 +177,7 @@ local healthStatus = {}
 function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   --print("UNIT_HEALTH: " .. unitId)
 
-  if (not TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlerts) then return end
+  if (not Safeguard_Settings.Options.EnableLowHealthAlerts) then return end
 
   local updateIsForPlayer = unitId == "player"
   local updateIsForParty = unitId:match("party")
@@ -205,29 +205,29 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
   if (newHealthStatus == oldHealthStatus) then return end
 
   if (newHealthStatus == 1 and health > 0) then
-    if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications) then
-      TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
+    if (Safeguard_Settings.Options.EnableLowHealthAlertTextNotifications) then
+      Safeguard_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthCriticallyLow, math.floor(healthPercentage * 100))
     end
 
     if (updateIsForPlayer) then
-      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds) then
+      if (Safeguard_Settings.Options.EnableLowHealthAlertSounds) then
         self:PlaySound("alert2")
       end
 
       MessageManager:SendMessageToGroup(ThhEnum.AddonMessageType.HealthCriticallyLow, math.floor(healthPercentage * 100))
 
-      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
-        TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
+      if (Safeguard_Settings.Options.EnableLowHealthAlertScreenFlashing) then
+        Safeguard_FlashFrame:PlayAnimation(9999, 1.5, 1.0)
       end
     end
   elseif (newHealthStatus == 2) then
     if (oldHealthStatus == nil or oldHealthStatus > newHealthStatus) then
-      if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertTextNotifications) then
-        TollskisHardcoreHelper_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow, math.floor(healthPercentage * 100))
+      if (Safeguard_Settings.Options.EnableLowHealthAlertTextNotifications) then
+        Safeguard_NotificationManager:ShowNotificationToPlayer(UnitName(unitId), ThhEnum.NotificationType.HealthLow, math.floor(healthPercentage * 100))
       end
       
       if (updateIsForPlayer) then
-        if (TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertSounds) then
+        if (Safeguard_Settings.Options.EnableLowHealthAlertSounds) then
           self:PlaySound("alert3")
         end
 
@@ -235,11 +235,11 @@ function EM.EventHandlers.UNIT_HEALTH(self, unitId)
       end
     end
 
-    if (updateIsForPlayer and TollskisHardcoreHelper_Settings.Options.EnableLowHealthAlertScreenFlashing) then
-      TollskisHardcoreHelper_FlashFrame:PlayAnimation(9999, 2.0, 0.75)
+    if (updateIsForPlayer and Safeguard_Settings.Options.EnableLowHealthAlertScreenFlashing) then
+      Safeguard_FlashFrame:PlayAnimation(9999, 2.0, 0.75)
     end
   elseif (updateIsForPlayer) then
-    TollskisHardcoreHelper_FlashFrame:StopAnimation()
+    Safeguard_FlashFrame:StopAnimation()
   end
 
   healthStatus[unitId] = newHealthStatus
@@ -302,7 +302,7 @@ function EM:PlaySound(soundFile)
   SetCVar("Sound_EnableDialog", 1)
   SetCVar("Sound_DialogVolume", 1)
 
-  PlaySoundFile("Interface\\AddOns\\TollskisHardcoreHelper\\resources\\" .. soundFile .. ".mp3", "Dialog")
+  PlaySoundFile("Interface\\AddOns\\Safeguard\\resources\\" .. soundFile .. ".mp3", "Dialog")
 
   C_Timer.After(1, function()
     SetCVar("Sound_EnableDialog", normalEnableDialog)
@@ -336,9 +336,9 @@ function EM:UpdateGroupMemberInfo()
   end
   
   -- Perform actions for units who left the group.
-  for k,v in pairs(TollskisHardcoreHelper_PlayerStates) do
+  for k,v in pairs(Safeguard_PlayerStates) do
     if (not unitGuidsInGroup[k]) then
-      TollskisHardcoreHelper_PlayerStates[k] = nil
+      Safeguard_PlayerStates[k] = nil
     end
   end
 end

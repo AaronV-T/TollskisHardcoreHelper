@@ -1,6 +1,6 @@
-$addonVersionLineVanilla = Select-String -Pattern "## Version" -Path ".\TollskisHardcoreHelper_Vanilla.toc"
+$addonVersionLineVanilla = Select-String -Pattern "## Version" -Path ".\Safeguard_Vanilla.toc"
 $addonVersionVanilla = $addonVersionLineVanilla.ToString().Substring($addonVersionLineVanilla.ToString().LastIndexOf(" ") + 1)
-$addonVersionLineWotlk = Select-String -Pattern "## Version" -Path ".\TollskisHardcoreHelper_Wrath.toc"
+$addonVersionLineWotlk = Select-String -Pattern "## Version" -Path ".\Safeguard_Wrath.toc"
 $addonVersionWotlk = $addonVersionLineWotlk.ToString().Substring($addonVersionLineWotlk.ToString().LastIndexOf(" ") + 1)
 
 if ($addonVersionVanilla -ne $addonVersionWotlk) {
@@ -8,7 +8,7 @@ if ($addonVersionVanilla -ne $addonVersionWotlk) {
 }
 
 $outputDirectoryPath = ".\Deploys"
-$outputFileName = "TollskisHardcoreHelper_$addonVersionVanilla"
+$outputFileName = "Safeguard_$addonVersionVanilla"
 if ((git branch).IndexOf("* master") -lt 0 -or (git status --porcelain).length -ne 0) {
   Write-Host "You are on a development branch or have uncommited changes."
   $currentDateTime = Get-Date -Format "yyyy-MM-dd-HH-mm-ss"
@@ -22,8 +22,8 @@ if (Test-Path -Path "$outputFilePath") {
 }
 
 $tempDirectoryPath = "$outputDirectoryPath\Temp"
-$tempSubDirectoryPath = "$tempDirectoryPath\TollskisHardcoreHelper"
-New-Item -Path ".\Deploys\Temp" -Name "TollskisHardcoreHelper" -ItemType "directory" | Out-Null
+$tempSubDirectoryPath = "$tempDirectoryPath\Safeguard"
+New-Item -Path ".\Deploys\Temp" -Name "Safeguard" -ItemType "directory" | Out-Null
 
 Copy-Item ".\*" -Destination "$tempSubDirectoryPath" -Include *.lua,*.md,*.toc
 Copy-Item ".\resources" -Destination "$tempSubDirectoryPath" -Recurse

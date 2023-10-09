@@ -1,9 +1,9 @@
 ## Interface: 11404
-## Title: Tollski's Hardcore Helper
+## Title: Safeguard
 ## Notes: Provides functionality to help survive in Hardcore.
 ## Author: Tollski
-## Version: 1.0.0
-## SavedVariables: TOLLSKISHARDCOREHELPER_SETTINGS
+## Version: 1.0.1
+## SavedVariables: SAFEGUARD_SETTINGS
 
 Enum.lua
 FlashFrame.lua

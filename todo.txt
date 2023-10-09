@@ -7,6 +7,7 @@ Alert other players with the addon if disconnecting, logging out, hearthing, or 
   AFK
 Low rank combat skill reminders
 Alert when high level mobs are detected, targetted, or targetting player
+Alert if settings change.
 Show how many mobs are in combat with you, with your pet, and with other players. Alert when it is many (e.g. especially for accidental pet pulls).
 Show dangerous quests
 Show warnings when important buffs/items missing (Power Word: Fortitude, Healthstones, seals, auras)
@@ -20,7 +21,6 @@ low ammo
 breath warnings
 warning on pvp flagging
 
-Dualbox
 Auto-accept partner trade
 Notify on follow break
 Autoinvite

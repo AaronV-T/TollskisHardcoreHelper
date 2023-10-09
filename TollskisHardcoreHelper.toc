@@ -1,3 +1,0 @@
-## Interface: 00000
-## Title: Tollski's Hardcore Helper (Unsupported Client)
-## Notes: Tollski's Hardcore Helper only works on Classic clients.
